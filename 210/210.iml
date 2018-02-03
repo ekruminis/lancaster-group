@@ -7,7 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="src" level="application" />
-    <orderEntry type="library" name="src (2)" level="application" />
+    <orderEntry type="library" name="src (3)" level="application" />
+    <orderEntry type="library" name="jdk1.8" level="project" />
+    <orderEntry type="library" name="jsfml" level="project" />
   </component>
 </module>

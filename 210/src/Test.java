@@ -15,7 +15,11 @@ import org.jsfml.window.event.*;
 import org.jsfml.graphics.*;
 
 class Test {
+	private static int screenWidth  = 1024;
+	private static int screenHeight = 768;
 	private boolean running=false;
+
+	
 
 	enum State{
 		MENU,GAME
@@ -39,7 +43,7 @@ class Test {
 	// be on different filesystem paths depending on the version
 	// of Java and whether the JDK or JRE version is being used.
 	//
-	private static String JavaVersion =
+	private static String JavaVersion = 
 		Runtime.class.getPackage( ).getImplementationVersion( );
 	private static String JdkFontPath =
 		"C:\\Program Files\\Java\\jdk" + JavaVersion +
@@ -234,10 +238,10 @@ class Test {
 		}
 	}
 
-	public void run(int x, int y) {
-		int screenWidth = x;
-		int screenHeight = y;
-		playerChoice=State.GAME;
+	public void run (MainMenu x) {
+
+		if(x.getStatus ()==true)
+			playerChoice=State.GAME;
 		//
 		// Check whether we're running from a JDK or JRE install
 		// ...and set FontPath appropriately.
@@ -293,4 +297,14 @@ class Test {
 			}
 		}
 	}
-}
+
+	public static void main (String args[ ]) {
+		MainMenu x = new MainMenu ();
+		x.run ();
+		Test t = new Test( );
+
+				t.run(x);
+
+
+	}
+}	

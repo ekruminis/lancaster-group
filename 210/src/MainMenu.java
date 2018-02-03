@@ -13,33 +13,18 @@ import org.jsfml.audio.*;
 
 class MainMenu {
 
-    //
-    // The Java install comes with a set of fonts but these will
-    // be on different filesystem paths depending on the version
-    // of Java and whether the JDK or JRE version is being used.
-    //
-    private static String JavaVersion =
-            Runtime.class.getPackage( ).getImplementationVersion( );
-    private static String JdkFontPath =
-            "C:\\Program Files\\Java\\jdk" + JavaVersion +
-                    "\\jre\\lib\\fonts\\";
-    private static String JreFontPath =
-            "C:\\Program Files\\Java\\jre" + JavaVersion +
-                    "\\lib\\fonts\\";
-
     private static int fontSize     = 48;
-    private static String FontFile  = "LucidaSansRegular.ttf";
+    private static String FontFile  = "./src/FreeSans.ttf";
     private static String ImageFile = "team.jpg";
 
     private static String Title   = "Hello SCC210!";
 
     private RenderWindow window = new RenderWindow ();
-    private String FontPath;	// Where fonts were found
     private int noItemsInMenu=3;
     private int position=0;
     private boolean status=true;
-    private int screenWidth = 1024;
-    private int screenHeight = 768;
+    private int screenWidth = 1600;
+    private int screenHeight = 900;
     private class Message  {
         private Text text;
 
@@ -50,7 +35,7 @@ class MainMenu {
             Font sansRegular = new Font( );
             try {
                 sansRegular.loadFromFile(
-                        Paths.get(FontPath+FontFile));
+                        Paths.get(FontFile));
             } catch (IOException ex) {
                 ex.printStackTrace( );
             }
@@ -90,8 +75,8 @@ class MainMenu {
 
         }
     }
-    //actually should be called loadbackground :D
-    public Sprite loadTextures(){
+
+    public Sprite loadBackground(){
         Texture texture1 = new Texture();
 
         try {
@@ -118,17 +103,11 @@ class MainMenu {
       position = 0;
       noItemsInMenu = 3;
         Text[] text = new Text[noItemsInMenu];
-        //
-        // Check whether we're running from a JDK or JRE install
-        // ...and set FontPath appropriately.
-        //
-        if ((new File (JreFontPath)).exists ()) FontPath = JreFontPath;
-        else FontPath = JdkFontPath;
 
         Font sansRegular = new Font ();
         try {
             sansRegular.loadFromFile (
-                    Paths.get (FontPath + FontFile));
+                    Paths.get (FontFile));
         } catch (IOException ex) {
             ex.printStackTrace ();
         }
@@ -165,7 +144,7 @@ class MainMenu {
         while (window.isOpen ()) {
 
             window.clear ();
-            window.draw (loadTextures());
+            window.draw (loadBackground());
 
             for(int i=0;i<3;i++)
             window.draw (text[i]);
@@ -218,17 +197,11 @@ class MainMenu {
         position = 0;
         noItemsInMenu = 4;
         Text[] text = new Text[noItemsInMenu];
-        //
-        // Check whether we're running from a JDK or JRE install
-        // ...and set FontPath appropriately.
-        //
-        if ((new File (JreFontPath)).exists ()) FontPath = JreFontPath;
-        else FontPath = JdkFontPath;
-
+		
         Font sansRegular = new Font ();
         try {
             sansRegular.loadFromFile (
-                    Paths.get (FontPath + FontFile));
+                    Paths.get (FontFile));
         } catch (IOException ex) {
             ex.printStackTrace ();
         }
@@ -268,7 +241,7 @@ class MainMenu {
 //Main loop
         while (window.isOpen ()) {
             window.clear ();
-            window.draw (loadTextures());
+            window.draw (loadBackground());
 
             for(int i=0;i<4;i++)
             window.draw (text[i]);
