@@ -83,7 +83,7 @@ public class Enemy {
             System.out.println ("I am background I dont exist :(");
         }
         if(this.currentHealth > 0) {
-            rect = new FloatRect(x - hero.getBg().getBackX(), y, 90, 90);
+            rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
         }
 
        //  rectangle = new RectangleShape(x1);
@@ -98,10 +98,10 @@ public class Enemy {
 
         window.draw (img);
 
-        if(this.currentHealth <= 0 && this.currentHealth > -90) {
+        if(this.currentHealth <= 0 && this.currentHealth > -9000) {
             this.rect = new FloatRect(0,0,0,0);
             this.image().rotate(90);
-            this.setCurrentHealth(-100);
+            this.setCurrentHealth(-10000);
         }
     }
 

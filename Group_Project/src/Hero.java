@@ -110,9 +110,9 @@ public class Hero {
         //
         obj = img;
         setPosition = img::setPosition;
-        System.out.println (x+"x"+y+"y");
+        //System.out.println (x+"x"+y+"y");
         if(check(x+1,y-1)){
-            System.out.println ("COllsion ffs");
+            //System.out.println ("COllsion ffs");
         }
         hero = new Sprite (bg.loadTextures ());
         hero.setOrigin(Vector2f.div(new Vector2f(bg.getTexture1 ()), 1000000));
@@ -203,7 +203,7 @@ public class Hero {
         }*/
         // Prevents going beyond X coordinate of 0
         if (centerX + speedX <= 60) {
-            centerX = 59;
+            centerX = 60;
         }
         window.draw(hero);
 
@@ -214,12 +214,12 @@ public class Hero {
 
             rect1= new FloatRect (centerX,centerY,80,110);
         }else if(!collide){
-            System.out.println ("2");
+            //System.out.println ("2");
             centerY += speedY;
-            System.out.println ("");
+            //System.out.println ("");
             rect1= new FloatRect (centerX,centerY,80,110);
         }else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
-            System.out.println ("jajajajaajajajaa");
+            //System.out.println ("jajajajaajajajaa");
             speedY=-20;
             centerY +=speedY;
         }
@@ -306,14 +306,9 @@ public class Hero {
         if(ins!=null) {
             this.collidingEntity= enemy;
             collide=true;
-            checkTopCollision (x);
-            if(collidedTop==false) {
-
-                checkRightCollision (x);
-                checkLeftCollision (x);
-            }
-
-
+            checkRightCollision (x);
+            checkLeftCollision (x);
+            bounce(enemy);
 
         } else {
             noCollision ();
@@ -345,19 +340,36 @@ public class Hero {
         }
 
     public void checkTopCollision(FloatRect x){
-        System.out.println (jumped);
+        //System.out.println (jumped);
 
         if((int)rect1.top<= (int)x.top-x.height ){
             collide=true;
             collidedTop=true;
-            System.out.println(collidedTop);
+            //System.out.println(collidedTop);
 
         }
     }
-        public void setXYPosition(int x,int y){
-            centerY=y;
-            centerX=x;
+
+    public void bounce(Enemy e) {
+        FloatRect x = e.getRect();
+        FloatRect ins = rect1.intersection (x);
+        // ???????? yeah i know.. this basically checks if the player is above the enemy but between him.. then it automatically jumps and deals dmg.. i have no idea why i divided width by 2 and
+        // then added it to player, but it makes the collision more accurate..
+        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
+            if(ins!=null) {
+                // for some reason it stops jumping after jumping 15 or so times????? idk why.. it also slides on x-axis a tiny bit when close to the very corners
+                // probably not an issue as enemy will be moving, so getting 10+ jumps on him should be impossible and sliding is actually good.
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                speedY = -20;
+                centerY += speedY;
+            }
         }
+    }
+
+    public void setXYPosition(int x,int y){
+        centerY=y;
+        centerX=x;
+    }
 
 
     public void setCenterX(int centerX) {
@@ -369,6 +381,9 @@ public class Hero {
     }
     public int getCenterY(){
         return centerY;
+    }
+    public void setCenterY(int y) {
+        centerY = y;
     }
     public Background getBg(){
         return bg;

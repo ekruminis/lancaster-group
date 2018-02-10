@@ -114,8 +114,6 @@ public class Game {
 
             player.checkCollision(box1);
             player.checkCollision(box2);
-            player.checkCollision(x);
-            player.checkCollision(Thankyou);
             x.image ().draw (window,RenderStates.DEFAULT);
             x.update (player,window);
             Thankyou.update (player,window);
@@ -134,13 +132,19 @@ public class Game {
                 if(b.getImg() == null) {
                     dropped = true;
                 }
+                // if projectile hits an enemy, you still need to wait for it to cross all the way to the end before shooting again..
+                // not really noticeable(only on bullet shooting when in close range to an enemy), but something to note..
+                // lets just pretend the gun will be a revolver or something so shooting again takes time :)
                 if(b.getImg() != null) {
                     b.checkCollision(x);
                     b.checkCollision(Thankyou);
                 }
             }
-            System.out.println("x has = " + x.getCurrentHealth());
-            System.out.println("thankyou has = " + Thankyou.getCurrentHealth());
+            player.checkCollision(x);
+            player.checkCollision(Thankyou);
+
+            //System.out.println("x has = " + x.getCurrentHealth());
+            //System.out.println("thankyou has = " + Thankyou.getCurrentHealth());
 
             // Update the display with any changes
             window.display ();

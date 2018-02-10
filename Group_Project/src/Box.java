@@ -87,7 +87,7 @@ public class Box {
         if(hero.getBg ()==null){
             System.out.println ("I am background I dont exist :(");
         }
-        rect = new FloatRect (x-hero.getBg ().getBackX (),y,90,90);
+        rect = new FloatRect (x-hero.getBg ().getBackX (),y,90,80);
 
 
         //  rectangle = new RectangleShape(x1);
