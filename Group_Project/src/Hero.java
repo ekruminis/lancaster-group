@@ -35,7 +35,7 @@ public class Hero {
     private int centerY = 748;
     private boolean jumped = false;
     private Enemy collidingEntity;
-
+    private Box collidingEntity2;
 
 
     private int speedX = 0;
@@ -85,6 +85,7 @@ public class Hero {
     }
 
     private boolean collide=false;
+
     public Hero(int x, int y) {
 
 
@@ -151,10 +152,6 @@ public class Hero {
 
 
     }
-    public void shoot() {
-        Projectiles pro = new Projectiles (0,0,this, true, window);
-
-    }
 
     public void moveRight() {
 
@@ -216,12 +213,12 @@ public class Hero {
             centerY = 700;
 
             rect1= new FloatRect (centerX,centerY,80,110);
-        }else if(!collide ){
+        }else if(!collide){
             System.out.println ("2");
             centerY += speedY;
             System.out.println ("");
             rect1= new FloatRect (centerX,centerY,80,110);
-        }else if(jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop){
+        }else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
             System.out.println ("jajajajaajajajaa");
             speedY=-20;
             centerY +=speedY;
@@ -247,7 +244,7 @@ public class Hero {
         if ( !collide) {
             speedY += 1;
 
-            if (centerY + speedY >= 700 || collide ) {
+            if ((centerY + speedY >= 700 || collide )) {
                 centerY = 700;
                 speedY = 0;
 
@@ -257,41 +254,77 @@ public class Hero {
         }
 
     }
-    public void checkCollision(Enemy enemy){
-            if(collidingEntity!=null && collidingEntity!=enemy){
-                return;
-            }
-            FloatRect x = enemy.getRect ();
+    public void checkCollision(Box box){
+        if(collidingEntity2!=null && collidingEntity2!=box){
+            return;
+        }
+        FloatRect x = box.getRect ();
 
         //System.out.println ("Enemy" +((int)x.top-x.height));
         //System.out.println (rect1.top+"hero");
-            if (rect1==null || x==null){
-                return;
+        if (rect1==null || x==null){
+            return;
+        }
+
+        FloatRect ins = rect1.intersection (x);
+
+        if(ins!=null) {
+            this.collidingEntity2= box;
+            collide=true;
+            checkTopCollision (x);
+            if(collidedTop==false) {
+
+                checkRightCollision (x);
+                checkLeftCollision (x);
             }
 
-            FloatRect ins = rect1.intersection (x);
-
-            if(ins!=null) {
-                this.collidingEntity= enemy;
-                collide=true;
-                checkTopCollision (x);
-                if(collidedTop==false) {
-
-                    checkRightCollision (x);
-                    checkLeftCollision (x);
-                }
 
 
+        } else {
+            noCollision ();
 
-            } else {
-               noCollision ();
 
-
-            }
+        }
 
 
     }
+
+    public void checkCollision(Enemy enemy){
+        if(collidingEntity!=null && collidingEntity!=enemy){
+            return;
+        }
+        FloatRect x = enemy.getRect ();
+
+        //System.out.println ("Enemy" +((int)x.top-x.height));
+        //System.out.println (rect1.top+"hero");
+        if (rect1==null || x==null){
+            return;
+        }
+
+        FloatRect ins = rect1.intersection (x);
+
+        if(ins!=null) {
+            this.collidingEntity= enemy;
+            collide=true;
+            checkTopCollision (x);
+            if(collidedTop==false) {
+
+                checkRightCollision (x);
+                checkLeftCollision (x);
+            }
+
+
+
+        } else {
+            noCollision ();
+
+        }
+
+
+    }
+
     public void noCollision(){
+        this.collidingEntity2=null;
         this.collidingEntity=null;
         collidedTop=false;
         collide=false;
@@ -316,9 +349,8 @@ public class Hero {
 
         if((int)rect1.top<= (int)x.top-x.height ){
             collide=true;
-
             collidedTop=true;
-
+            System.out.println(collidedTop);
 
         }
     }
@@ -326,8 +358,6 @@ public class Hero {
             centerY=y;
             centerX=x;
         }
-
-
 
 
     public void setCenterX(int centerX) {

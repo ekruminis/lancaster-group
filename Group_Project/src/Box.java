@@ -20,7 +20,7 @@ public class Box {
     }
 
     RectangleShape rectangle;
-    private int centerX, centerY;
+    private int speedX, centerX, centerY;
     Game game;
     protected Drawable obj;
     private String ImageFile="./graphics/box.png";
@@ -31,6 +31,8 @@ public class Box {
     public void setRect(FloatRect rect) {
         this.rect = rect;
     }
+
+
 
     public Box(int x,int y,Hero hero){
         this.x=x;
@@ -48,6 +50,10 @@ public class Box {
         img.setPosition (x,y);
 
         x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
+
+
+
+
 
     }
 
@@ -103,10 +109,30 @@ public class Box {
         return rect;
     }
 
+    public int getSpeedX() {
+        return speedX;
+    }
+
+
+    public int getCenterX() {
+        return centerX;
+    }
+
+
+    public int getCenterY() {
+        return centerY;
+    }
 
     public void setObj(Drawable obj){
         this.obj=obj;
     }
+
+
+
+    public void setSpeedX(int speedX) {
+        this.speedX = speedX;
+    }
+
 
     public void setCenterX(int centerX) {
         this.centerX = centerX;
