@@ -58,10 +58,10 @@ public class Game {
                 WindowStyle.DEFAULT);
 
         window.setFramerateLimit (100);
-        x = new Enemy (400,730,player,"1");
+        //x = new Enemy (400,730,player,"1");
         Thankyou = new Enemy(800,730,player,"2");
-        enemies.add(x);
         enemies.add(Thankyou);
+        //enemies.add(x);
         box1 = new Box(1500, 730, player);
         box2 = new Box(1800, 730, player);
         boxes.add(box1);
@@ -114,18 +114,18 @@ public class Game {
 
             player.checkCollision(box1);
             player.checkCollision(box2);
-            x.image ().draw (window,RenderStates.DEFAULT);
-            x.update (player,window);
-            Thankyou.update (player,window);
+            //x.image ().draw (window,RenderStates.DEFAULT);
+            //x.update (player,window);
             box1.image ().draw (window,RenderStates.DEFAULT);
             box1.update (player,window);
             box2.update(player, window);
             player.update (window);
             player.image ().draw (window, RenderStates.DEFAULT);
             Thankyou.image ().draw (window,RenderStates.DEFAULT);
-            x.image ().draw (window,RenderStates.DEFAULT);
+            //x.image ().draw (window,RenderStates.DEFAULT);
             box2.image ().draw (window,RenderStates.DEFAULT);
             box1.image ().draw (window,RenderStates.DEFAULT);
+            Thankyou.update (player,window);
             if(shooted) {
                 Projectiles b = pro.get(0);
                 b.shoot(window);
@@ -136,11 +136,11 @@ public class Game {
                 // not really noticeable(only on bullet shooting when in close range to an enemy), but something to note..
                 // lets just pretend the gun will be a revolver or something so shooting again takes time :)
                 if(b.getImg() != null) {
-                    b.checkCollision(x);
+                    //b.checkCollision(x);
                     b.checkCollision(Thankyou);
                 }
             }
-            player.checkCollision(x);
+            //player.checkCollision(x);
             player.checkCollision(Thankyou);
 
             //System.out.println("x has = " + x.getCurrentHealth());
@@ -166,7 +166,7 @@ public class Game {
         return player;
     }
     public Enemy getEnemy(){
-        return x;
+        return Thankyou;
     }
 }
 

@@ -14,7 +14,7 @@ public class Enemy {
     int position = 0;
     FloatRect rect;
     Vector2f x1;
-
+    private String FontFile  = "font/FreeSans.ttf";
     public RectangleShape getRectangle() {
         return rectangle;
     }
@@ -69,13 +69,6 @@ public class Enemy {
        return imgTexture;
    }
     public void update(Hero hero,RenderWindow window) {
-        /*if(hero.getCenterX () < x){
-            position-=3;
-        } else if(hero.getCenterX () > x){
-            position+=3;
-        } else {
-
-        }*/
         if(hero==null){
             System.out.println ("I am hero I am null");
         }
@@ -84,8 +77,25 @@ public class Enemy {
         }
         if(this.currentHealth > 0) {
             rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
+            Font fontstyle = new Font();
+            try {
+                fontstyle.loadFromFile(
+                        Paths.get(FontFile));
+            } catch (IOException ex) {
+                ex.printStackTrace( );
+            }
+            Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
+            healthbar.setColor(Color.GREEN);
+            healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+            healthbar.setPosition(x-hero.getBg ().getBackX(), y-15);
+            if(this.getCurrentHealth() <= 50) {
+                healthbar.setColor(Color.YELLOW);
+            }
+            if(this.getCurrentHealth() <= 25) {
+                healthbar.setColor(Color.RED);
+            }
+            window.draw(healthbar);
         }
-
        //  rectangle = new RectangleShape(x1);
        //  rectangle.setPosition (this.x,this.y);
        //  rectangle.setFillColor (Color.RED);

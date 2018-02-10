@@ -36,6 +36,7 @@ public class Hero {
     private boolean jumped = false;
     private Enemy collidingEntity;
     private Box collidingEntity2;
+    private String FontFile  = "font/FreeSans.ttf";
 
 
     private int speedX = 0;
@@ -66,7 +67,7 @@ public class Hero {
     private boolean collidedTop = false;
 
     private int startScrolling=500;
-
+    private int maxHealth, currentHealth;
     public Texture getImgTexture() {
         return imgTexture;
     }
@@ -91,7 +92,7 @@ public class Hero {
 
         this.centerX = x;
         this.centerY = y;
-
+        this.currentHealth = 100;
          imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (ImageFile));
@@ -205,7 +206,27 @@ public class Hero {
         if (centerX + speedX <= 60) {
             centerX = 60;
         }
+
+        Font fontstyle = new Font();
+        try {
+            fontstyle.loadFromFile(
+                    Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition(centerX, centerY-15);
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+
         window.draw(hero);
+        window.draw(healthbar);
 
     }
     public void updateYPosition(){
@@ -396,6 +417,14 @@ public class Hero {
             return true;
         }
         return false;
+    }
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+
+    public int getCurrentHealth() {
+        return currentHealth;
     }
     public static void main(String[] args){
         Hero x = new Hero(700,200);
