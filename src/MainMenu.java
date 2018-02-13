@@ -8,120 +8,67 @@ import org.jsfml.window.event.*;
 import org.jsfml.graphics.*;
 
 /**
- *This class produces a main menu for the player to select three options: Play, Options and Exit.
- *Test the commit
+ *This class implements a simple main menu for the player to select three options: Play, Options and Exit.
+ *Test the commit.
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
  */
-
 class MainMenu {
+    private int noItemsInMenu;                              //Number of items in the window
+    private int position;                                   //Position
+    private static String FontFile  = "font/FreeSans.ttf";  //Font used for Main Menu text
+    private static String Title     = "Bad | Reflection";   //Title of the Window
 
-    private static int fontSize     = 48;
-    private static String FontFile  = "font/FreeSans.ttf";
-    private static String Title   = "Bad | Reflection";
+    private int screenWidth         = 1600;                 //Screen Width
+    private int screenHeight        = 900;                  //Screen Height
+    private RenderWindow window     = new RenderWindow ();  //Instance of Window
 
-    private RenderWindow window = new RenderWindow ();
-    private int noItemsInMenu=3;
-    private int position=0;
-    private boolean status=true;
-    private int screenWidth = 1600;
-    private int screenHeight = 900;
-    private class Message  {
-        private Text text;
-
-        public Message(int x, int y, int r, String message, Color c) {
-            //
-            // Load the font
-            //
-            Font sansRegular = new Font( );
-            try {
-                sansRegular.loadFromFile(
-                        Paths.get(FontFile));
-            } catch (IOException ex) {
-                ex.printStackTrace( );
-            }
-
-            text = new Text (message, sansRegular, fontSize);
-            text.setColor(c);
-            text.setStyle(Text.BOLD | Text.UNDERLINED);
-
-            FloatRect textBounds = text.getLocalBounds( );
-            // Find middle and set as origin/ reference point
-            text.setOrigin(textBounds.width / 2,
-                    textBounds.height / 2);
-
-
-        }
-    }
-
-    private class Image  {
-        private Sprite img;
-
-        public Image(int x, int y, int r, String textureFile) {
-            //
-            // Load image/ texture
-            //
-            Texture imgTexture = new Texture( );
-            try {
-                imgTexture.loadFromFile(Paths.get(textureFile));
-            } catch (IOException ex) {
-                ex.printStackTrace( );
-            }
-            imgTexture.setSmooth(true);
-
-            img = new Sprite(imgTexture);
-            img.setOrigin(Vector2f.div(
-                    new Vector2f(imgTexture.getSize()), 2));
-
-
-        }
-    }
-
-    public Sprite loadBackground(){
+    /**
+     *Load the appropriate background depending on the screenWidth: 1024(big), 1600(medium) or 1920(small).
+     *
+     * @return the background used for the Main Menu
+     */
+    private Sprite loadBackground(){
         Texture texture1 = new Texture();
-
         try {
-            //Try to load the texture from file "mario.jpg"//change your paths boys/girl"
+            //Try to load the texture from folder 'mainMenu'"
             if(screenWidth == 1024)
-              texture1.loadFromFile(Paths.get("./mainmenu/titleimgbig.png"));
+              texture1.loadFromFile(Paths.get("./mainMenu/titleimgbig.png"));
             else if(screenWidth == 1600)
-              texture1.loadFromFile(Paths.get("./mainmenu/titleimgmid.png"));
+              texture1.loadFromFile(Paths.get("./mainMenu/titleimgmid.png"));
             else if(screenWidth == 1920)
-              texture1.loadFromFile(Paths.get("./mainmenu/titleimgsmall.png"));
-            //Texture was loaded successfully - retrieve and print size
-            Vector2i size = texture1.getSize();
-
-           // System.out.println("The texture is " + size.x + "x" + size.y);
+              texture1.loadFromFile(Paths.get("./mainMenu/titleimgsmall.png"));
+            //Texture was loaded successfully
         } catch(IOException ex) {
-            //Ouch! something went wrong
+            //"Houston, we have a problem."
             ex.printStackTrace();
         }
         Sprite sprite = new Sprite (texture1);
         return sprite;
     }
 
+    /**
+     *Creates the first window and populates it with the three text options: Play, Options and Exit with different colours
+     *
+     *Creates text with arrays, adds colour, font and size to the three text options and then runs a main loop which allows the
+     *player to select the option they want.
+     *
+     */
     public void run ( ) {
-      position = 0;
-      noItemsInMenu = 3;
-        Text[] text = new Text[noItemsInMenu];
-
-        Font sansRegular = new Font ();
+        position = 0; //set the position to start
+        noItemsInMenu = 3;  //set number of items
+        Text[] text = new Text[noItemsInMenu]; //Create the array for text
+        Font sansRegular = new Font (); //set the font to sansRegular and then load it
         try {
-            sansRegular.loadFromFile (
-                    Paths.get (FontFile));
+            sansRegular.loadFromFile (Paths.get (FontFile));
         } catch (IOException ex) {
             ex.printStackTrace ();
         }
-
-        //
-        // Create a window
-        //
-        // RenderWindow window = new RenderWindow ();
-        window.create (new VideoMode (screenWidth, screenHeight),
-                Title,
-                WindowStyle.DEFAULT);
+        // Create a window and set frame cap
+        window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT);
         window.setFramerateLimit (30);
-        // Avoid excessive updates
 
-        //Create some texts with different colors, sizes and styles
+        //Create texts with different colors, sizes and styles
         text[0] = new Text ("Play", sansRegular, 32);
         text[0].setStyle (Text.ITALIC);
         text[0].setPosition (screenWidth/3, screenHeight-(screenHeight-200));
@@ -139,16 +86,12 @@ class MainMenu {
         text[2].setPosition (screenWidth/3, screenHeight-(screenHeight-500));
         text[2].setColor (Color.YELLOW);
 
-//Main loop
-        while (window.isOpen ()) {
-
-            window.clear ();
-            window.draw (loadBackground());
+        //Main loop
+        while (window.isOpen ()){window.clear ();
+        window.draw (loadBackground());
 
             for(int i=0;i<3;i++)
             window.draw (text[i]);
-
-
             window.display ();
 
             for (Event event : window.pollEvents ()) {
@@ -156,7 +99,6 @@ class MainMenu {
                     // the user pressed the close button
                     window.close ();
                 }
-
                 if (Keyboard.isKeyPressed (Keyboard.Key.W)) {
                     if (position-1 >=0) {
                         text[position].setColor (Color.YELLOW);
@@ -164,7 +106,6 @@ class MainMenu {
                         text[position].setColor (Color.RED);
                         break;
                     }
-
                 }
                 if (Keyboard.isKeyPressed (Keyboard.Key.S)) {
                     if (position+1 < noItemsInMenu) {
@@ -187,16 +128,21 @@ class MainMenu {
                         System.exit(0);
                     }
                 }
-
             }
         }
     }
 
-    public void optionMenu ( ) {
+    /**
+     *Creates the option window and populates it with resolution settings
+     *
+     *Creates text with arrays, adds colour, font and size to the three text options and then runs a main loop which allows the
+     *player to select the option they want.
+     *
+     */
+    private void optionMenu() {
         position = 0;
         noItemsInMenu = 4;
         Text[] text = new Text[noItemsInMenu];
-		
         Font sansRegular = new Font ();
         try {
             sansRegular.loadFromFile (
@@ -204,17 +150,9 @@ class MainMenu {
         } catch (IOException ex) {
             ex.printStackTrace ();
         }
-        //
-        // Create a window
-        //
-        // RenderWindow window = new RenderWindow ();
-        window.create (new VideoMode (screenWidth, screenHeight),
-                Title,
-                WindowStyle.DEFAULT);
+        window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT);
         window.setFramerateLimit (30);
-        // Avoid excessive updates
 
-        //Create some texts with different colors, sizes and styles
         text[0] = new Text ("1024x768", sansRegular, 32);
         text[0].setStyle (Text.ITALIC);
         text[0].setPosition (screenWidth/3, screenHeight-(screenHeight-200));
@@ -237,15 +175,12 @@ class MainMenu {
         text[3].setPosition (screenWidth/3, screenHeight-(screenHeight-650));
         text[3].setColor (Color.YELLOW);
 
-//Main loop
-        while (window.isOpen ()) {
-            window.clear ();
+        //Main loop for option menu
+        while (window.isOpen ()) { window.clear ();
             window.draw (loadBackground());
 
             for(int i=0;i<4;i++)
             window.draw (text[i]);
-
-
             window.display ();
 
             for (Event event : window.pollEvents ()) {
@@ -253,7 +188,6 @@ class MainMenu {
                     // the user pressed the close button
                     window.close ();
                 }
-
                 if (Keyboard.isKeyPressed (Keyboard.Key.W)) {
                     if (position-1 >=0) {
                         text[position].setColor (Color.YELLOW);
@@ -261,7 +195,6 @@ class MainMenu {
                         text[position].setColor (Color.RED);
                         break;
                     }
-
                 }
                 if (Keyboard.isKeyPressed (Keyboard.Key.S)) {
                     if (position+1 < noItemsInMenu) {
@@ -294,35 +227,35 @@ class MainMenu {
                       run();
                     }
                 }
-
             }
         }
     }
 
-    public boolean getStatus(){
-        return status;
-    }
+    /**
+     * This returns the status
+     * @return status
+     */
 
-    public int getHeight() {
+
+    /**
+     * This returns the height of the screen
+     * @return Screen Height
+     */
+    private int getHeight() {
       return screenHeight;
     }
 
-    public int getWidth() {
+    /**
+     * This returns the width of the screen
+     * @return Screen width
+     */
+    private int getWidth() {
       return screenWidth;
     }
 
+    //Main function calls run function within MainMenu
     public static void main (String args[ ]) {
-        // Music titlesong = new Music();
-        // try {
-        //   titlesong.openFromFile(Paths.get("titlesong.ogg"));
-        // } catch(IOException ex) {
-        //   ex.printStackTrace();
-        // }
-        // titlesong.setLoop(true);
-        // titlesong.play();
-
-        MainMenu x = new MainMenu ();
-        x.run ();
-
+        MainMenu mm = new MainMenu ();
+        mm.run ();
     }
 }

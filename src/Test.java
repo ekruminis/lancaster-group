@@ -240,8 +240,8 @@ class Test {
 
 	public void run (MainMenu x) {
 
-		if(x.getStatus ()==true)
-			playerChoice=State.GAME;
+		//if(x.getStatus ()==true)
+		//	playerChoice=State.GAME;
 		//
 		// Check whether we're running from a JDK or JRE install
 		// ...and set FontPath appropriately.
