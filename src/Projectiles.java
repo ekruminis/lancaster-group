@@ -79,10 +79,14 @@ public class Projectiles {
         if(typeShot == 2) {
             if (!stoped) {
                 window.draw(img);
-                if (direction == true) // true shoots right
+				// true shoots right
+                if (direction == true) {
                     posx += 18;
-                if (direction == false) // false shoots left
+				}
+				// false shoots left
+                if (direction == false) {
                     posx -= 18;
+				}
                 img.setPosition((int) posx, (int) posy);
                 rect = new FloatRect ((float)posx, (float)posy,67,34); // 67x34 is just img dimensions
             }
@@ -100,7 +104,6 @@ public class Projectiles {
     public void checkCollision(Enemy enemy){
         FloatRect ins = enemy.getRect().intersection (rect);
         if(enemy.getCurrentHealth() > 0 && ins!=null && n == 0) {
-            System.out.println("skadaddy");
             img = new Sprite();
             enemy.setCurrentHealth(enemy.getCurrentHealth()-10);
             n = 1;

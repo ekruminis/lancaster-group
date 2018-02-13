@@ -14,56 +14,43 @@ import java.util.function.BiConsumer;
 
 public class Hero {
 
-    enum State {
-        MENU, GAME
-    }
 
-    State playerChoice = State.GAME;
 
-    public State getState() {
-        return playerChoice;
-    }
 
-    private String Title = "Let's Play!";
-    private static int fontSize = 48;
-    private int screenWidth = 1600;
-    private int screenHeight = 900;
-    private RenderWindow window = new RenderWindow ();
-    public int xPosition;
-    public int yPosition;
+
+
+
+
+    // hero X and Y coordinates
     private int centerX = 100;
     private int centerY = 748;
+
+
     private boolean jumped = false;
+
+
     private Enemy collidingEntity;
     private Box collidingEntity2;
-    private String FontFile  = "font/FreeSans.ttf";
+
+
+    private String FontFile  = "font/FreeSans.ttf"
 
 
     private int speedX = 0;
-
-    public int getSpeedX() {
-        return speedX;
-    }
-
-    public int getSpeedY() {
-        return speedY;
-    }
-
     private int speedY = 1;
+
     private Sprite img;
-    private int xx;
-    private int yy;
+
     private String ImageFile = "./graphics/player/idle.png";
-    private int a;
-    Drawable obj;
-    BiConsumer<Float, Float> setPosition;
-    Background bg = new Background (0,0);
+
+    private Drawable obj;
+    private BiConsumer<Float, Float> setPosition;
+    private Background bg = new Background (0,0);
     private int backy=0;
-    Sprite hero;
-    Game game;
-    FloatRect heroBounds;
-    private boolean collidedLeft = false;
-    private boolean collidedRight = false;
+    private Sprite background;
+
+
+
     private boolean collidedTop = false;
 
     private int startScrolling=500;
@@ -72,18 +59,17 @@ public class Hero {
         return imgTexture;
     }
 
-    Texture imgTexture;
+    private Texture imgTexture;
 
     public FloatRect getRect1() {
         return rect1;
     }
 
+    //Rectangle for collisions (surrounds hero)
+
     FloatRect rect1 = new FloatRect (100,700,80,110);
-    Sprite rects;
-    Clock frameClock;
-    public boolean isCollide() {
-        return collide;
-    }
+
+
 
     private boolean collide=false;
 
@@ -111,15 +97,14 @@ public class Hero {
         //
         obj = img;
         setPosition = img::setPosition;
-        //System.out.println (x+"x"+y+"y");
-        if(check(x+1,y-1)){
-            //System.out.println ("COllsion ffs");
-        }
-        hero = new Sprite (bg.loadTextures ());
-        hero.setOrigin(Vector2f.div(new Vector2f(bg.getTexture1 ()), 1000000));
-        hero.setPosition (0,0);
 
-        heroBounds = img.getGlobalBounds ();
+
+
+        background = new Sprite (bg.loadTextures ());
+        background.setOrigin(Vector2f.div(new Vector2f(bg.getTexture1 ()), 1000000));
+        background.setPosition (0,0);
+
+
     }
     public void draw(RenderWindow window){
 
@@ -186,9 +171,9 @@ public class Hero {
 
     }
     public void update(RenderWindow window) {
-        //checkCollision (x);
 
-       // System.out.println (centerY);
+
+
         bg.update ();
         //update X and scroll background accordingly
         updateXPosition ();
@@ -199,9 +184,7 @@ public class Hero {
 
         // Handles Jumping
         handleJumping ();
-      /*  if(collide){
-            jumped=false;
-        }*/
+
         // Prevents going beyond X coordinate of 0
         if (centerX + speedX <= 60) {
             centerX = 60;
@@ -215,9 +198,11 @@ public class Hero {
             ex.printStackTrace( );
         }
         Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
+
         healthbar.setColor(Color.GREEN);
         healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
         healthbar.setPosition(centerX, centerY-15);
+
         if(this.getCurrentHealth() <= 50) {
             healthbar.setColor(Color.YELLOW);
         }
@@ -225,7 +210,7 @@ public class Hero {
             healthbar.setColor(Color.RED);
         }
 
-        window.draw(hero);
+        window.draw(background);
         window.draw(healthbar);
 
     }
@@ -235,12 +220,12 @@ public class Hero {
 
             rect1= new FloatRect (centerX,centerY,80,110);
         }else if(!collide){
-            //System.out.println ("2");
+
             centerY += speedY;
-            //System.out.println ("");
+
             rect1= new FloatRect (centerX,centerY,80,110);
         }else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
-            //System.out.println ("jajajajaajajajaa");
+
             speedY=-20;
             centerY +=speedY;
         }
@@ -255,7 +240,7 @@ public class Hero {
                 rect1= new FloatRect (centerX,centerY,80,110);
             } else {
 
-                hero.setPosition((-bg.getBackX ()),0);
+                background.setPosition((-bg.getBackX ()),0);
 
             }
         }
@@ -281,8 +266,7 @@ public class Hero {
         }
         FloatRect x = box.getRect ();
 
-        //System.out.println ("Enemy" +((int)x.top-x.height));
-        //System.out.println (rect1.top+"hero");
+
         if (rect1==null || x==null){
             return;
         }
@@ -316,8 +300,7 @@ public class Hero {
         }
         FloatRect x = enemy.getRect ();
 
-        //System.out.println ("Enemy" +((int)x.top-x.height));
-        //System.out.println (rect1.top+"hero");
+
         if (rect1==null || x==null){
             return;
         }
@@ -350,7 +333,7 @@ public class Hero {
     public void checkLeftCollision(FloatRect x){
         if((int)rect1.left < x.left ) {
             centerX -= 6;
-            collidedLeft=true;
+
 
         }
     }
@@ -387,15 +370,6 @@ public class Hero {
         }
     }
 
-    public void setXYPosition(int x,int y){
-        centerY=y;
-        centerX=x;
-    }
-
-
-    public void setCenterX(int centerX) {
-        this.centerX = centerX;
-    }
 
     public int getCenterX(){
         return centerX;
@@ -403,21 +377,12 @@ public class Hero {
     public int getCenterY(){
         return centerY;
     }
-    public void setCenterY(int y) {
-        centerY = y;
-    }
+
     public Background getBg(){
         return bg;
     }
-    public int getBacky(){
-        return backy;
-    }
-    public boolean check(int x,int y){
-        if(rect1.contains (centerX,centerY)){
-            return true;
-        }
-        return false;
-    }
+
+
     public int getMaxHealth() {
         return maxHealth;
     }
