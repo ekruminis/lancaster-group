@@ -33,7 +33,7 @@ public class Hero {
     private Box collidingEntity2;
 
 
-    private String FontFile  = "font/FreeSans.ttf"
+    private String FontFile  = "font/FreeSans.ttf";
 
 
     private int speedX = 0;
