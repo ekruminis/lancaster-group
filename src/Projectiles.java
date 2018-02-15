@@ -6,6 +6,12 @@ import org.jsfml.system.Vector2f;
 import java.io.IOException;
 import java.nio.file.Paths;
 
+/**
+ *Creates projectiles and their movements
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
+ */
+
 public class Projectiles {
     int v0 = 60; // m/s
     int angle = 60;
@@ -13,24 +19,40 @@ public class Projectiles {
 
     double vx = v0 * Math.cos (Math.PI / 180 * angle);
     double vy = v0 * Math.sin (Math.PI / 180 * angle);
-
-    double posx = 200; // m
-    double posy = 700;  // m
+    double posx; // m
+    double posy;  // m
     double posx2 = 0;
     double time = 0; // s
     private String ImageFile = "./graphics/projectile2.png";
     private Sprite img;
     private boolean stoped=false;
     private int x,y;
+
+    /**
+     * get image
+     *
+     * @return img
+     */
     public Sprite getImg() {
         return img;
     }
+
     private boolean direction = true;
     private boolean drop;
     int typeShot = 0;
     FloatRect rect;
     int n = 0;
 
+    /**
+     * Creates a projectile
+     *
+     * @param x x position
+     * @param y y position
+     * @param hero hero
+     * @param directionChoice direction
+     * @param window the current window
+     * @param type type of projectile
+     */
     public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
         Texture imgTexture = new Texture ();
@@ -49,6 +71,11 @@ public class Projectiles {
         img.setPosition (x, y);
     }
 
+    /**
+     * Shoot the projectile
+     *
+     * @param window current window
+     */
     public void shoot(RenderWindow window) {
         // 1 -> throws Rock
         if(typeShot == 1) {
@@ -64,14 +91,11 @@ public class Projectiles {
                 rect = new FloatRect ((float)posx, (float)posy,67,34);
             }
 
-
             if (posy >= 780) {
                 stoped = true;
                 img = null;
                 rect = null;
             }
-
-
             // change speed in y
             vy -= 9.82 * dt; // gravity
         }
@@ -91,16 +115,19 @@ public class Projectiles {
                 rect = new FloatRect ((float)posx, (float)posy,67,34); // 67x34 is just img dimensions
             }
 
-
             if (posx >= posx2+1600 || posx <= posx2-600) {
                 stoped = true;
                 img = null;
                 rect = null;
             }
         }
-
     }
 
+    /**
+     * Check for collisions
+     *
+     * @param enemy Enemy
+     */
     public void checkCollision(Enemy enemy){
         FloatRect ins = enemy.getRect().intersection (rect);
         if(enemy.getCurrentHealth() > 0 && ins!=null && n == 0) {
@@ -110,6 +137,11 @@ public class Projectiles {
         }
     }
 
+    /**
+     * Refresh the  window
+     *
+     * @param window
+     */
     public void draw(RenderWindow window){
         window.draw(img);
     }

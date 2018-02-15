@@ -18,7 +18,6 @@ class MainMenu {
     private int position;                                   //Position
     private static String FontFile  = "font/FreeSans.ttf";  //Font used for Main Menu text
     private static String Title     = "Bad | Reflection";   //Title of the Window
-
     private int screenWidth         = 1600;                 //Screen Width
     private int screenHeight        = 900;                  //Screen Height
     private RenderWindow window     = new RenderWindow ();  //Instance of Window
@@ -118,11 +117,11 @@ class MainMenu {
                 if (Keyboard.isKeyPressed (Keyboard.Key.SPACE)) {
                     if (position == 0) {
                       window.close ();
-                      Game g = new Game( );
+                      Game g = new Game( ); //calls game
                       g.run(getWidth(), getHeight());
                     } else if (position == 1) {
                       window.close();
-                      optionMenu();
+                      optionMenu(); //calls optionMenu
 
                     }  else if (position == 2) {
                         System.exit(0);

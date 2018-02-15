@@ -12,70 +12,63 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 
+/**
+ *Layers a square over a selection of textures to give the hero fluid movement and collection detection
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
+ */
+
 public class Hero {
 
-
-
-
-
-
-
-
-    // hero X and Y coordinates
-    private int centerX = 100;
-    private int centerY = 748;
-
-
-    private boolean jumped = false;
-
-
-    private Enemy collidingEntity;
+    private int centerX;            //hero X and Y coordinates
+    private int centerY;
+    private boolean jumped = false; //initiate jumped as false
+    private Enemy collidingEntity;  //collisions
     private Box collidingEntity2;
-
-
-    private String FontFile  = "font/FreeSans.ttf";
-
-
-    private int speedX = 0;
+    private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
+    private int speedX = 0;  //speed
     private int speedY = 1;
-
     private Sprite img;
-
-    private String ImageFile = "./graphics/player/idle.png";
-
+    private String ImageFile = "./graphics/player/idle.png"; //get hero graphic
     private Drawable obj;
     private BiConsumer<Float, Float> setPosition;
     private Background bg = new Background (0,0);
     private int backy=0;
     private Sprite background;
-
-
-
     private boolean collidedTop = false;
-
     private int startScrolling=500;
     private int maxHealth, currentHealth;
+    private Texture imgTexture;
+    private boolean collide=false;
+
+    /**
+     *get the textures
+     *
+     * @return imgTexture
+     */
     public Texture getImgTexture() {
         return imgTexture;
     }
 
-    private Texture imgTexture;
-
+    /**
+     *get a rectangle
+     *
+     * @return rect1
+     */
     public FloatRect getRect1() {
         return rect1;
     }
 
     //Rectangle for collisions (surrounds hero)
-
     FloatRect rect1 = new FloatRect (100,700,80,110);
 
-
-
-    private boolean collide=false;
-
+    /**
+     *Loads the textures and position of the Hero
+     *
+     * @param x  x co-ordinates
+     * @param y  y co-ordinates
+     */
     public Hero(int x, int y) {
-
-
         this.centerX = x;
         this.centerY = y;
         this.currentHealth = 100;
@@ -88,31 +81,30 @@ public class Hero {
         imgTexture.setSmooth (true);
 
         img = new Sprite (imgTexture);
-        img.setOrigin (Vector2f.div (
-                new Vector2f (imgTexture.getSize ()), 2));
-
+        img.setOrigin (Vector2f.div (new Vector2f (imgTexture.getSize ()), 2));
         img.setPosition (x, y);
-        //
+
         // Store references to object and key methods
-        //
         obj = img;
         setPosition = img::setPosition;
-
-
 
         background = new Sprite (bg.loadTextures ());
         background.setOrigin(Vector2f.div(new Vector2f(bg.getTexture1 ()), 1000000));
         background.setPosition (0,0);
-
-
     }
-    public void draw(RenderWindow window){
 
+    //never used..ignore
+    public void draw(RenderWindow window){
         window.draw(obj);
     }
 
 
-
+    /**
+     * Change the texture for Hero
+     *
+     * @param ImageFile2 file location
+     * @return imgTexture return the image
+     */
     public Texture changeImg(String ImageFile2) {
         Texture imgTexture = new Texture ();
         try {
@@ -124,34 +116,42 @@ public class Hero {
         return imgTexture;
     }
 
+    /**
+     *Return sprite image
+     *
+     * @return img
+     */
     public Sprite image() {
         return img;
     }
 
+    /**
+     * Move the Hero left
+     *
+     */
     public void moveLeft() {
-
-
-
            speedX = -6;
            Texture r1 = changeImg ("./graphics/player/leftWalk1.png");
            img = new Sprite (r1);
-
-
     }
 
+    /**
+     *Move the Hero right
+     *
+     */
     public void moveRight() {
-
             speedX = 6;
             Texture r1 = changeImg ("./graphics/player/rightWalk1.png");
             img = new Sprite (r1);
-
             if (centerX > startScrolling)
                 bg.setBackX (bg.getBackX () + 6);
-
             bg.update ();
-
     }
 
+    /**
+     *Hero stays still
+     *
+     */
     public void idle() {
         speedX = 0;
         Texture i = changeImg("./graphics/player/idle.png");
@@ -159,45 +159,41 @@ public class Hero {
 
     }
 
-
-
-
-
+    /**
+     *Hero Jumps
+     *
+     */
     public void jump() {
         if (jumped == false) {
             speedY = -20;
             jumped = true;
         }
-
     }
+
+    /**
+     *Update the window about the Hero's position
+     *
+     * @param window the current window
+     */
     public void update(RenderWindow window) {
-
-
-
-        bg.update ();
-        //update X and scroll background accordingly
+        bg.update (); //update X and scroll background accordingly
         updateXPosition ();
-
-        // Updates Y Position
-        updateYPosition ();
-
-
-        // Handles Jumping
-        handleJumping ();
+        updateYPosition ();  // Updates Y Position
+        handleJumping (); // Handles Jumping
 
         // Prevents going beyond X coordinate of 0
         if (centerX + speedX <= 60) {
             centerX = 60;
         }
 
-        Font fontstyle = new Font();
+        Font fontStyle = new Font();  //load font
         try {
-            fontstyle.loadFromFile(
-                    Paths.get(FontFile));
+            fontStyle.loadFromFile(Paths.get(FontFile));
         } catch (IOException ex) {
             ex.printStackTrace( );
         }
-        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
+
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
 
         healthbar.setColor(Color.GREEN);
         healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
@@ -212,8 +208,12 @@ public class Hero {
 
         window.draw(background);
         window.draw(healthbar);
-
     }
+
+    /**
+     *Update the Y position of the hero
+     *
+     */
     public void updateYPosition(){
         if (centerY + speedY >= 700) {
             centerY = 700;
@@ -230,6 +230,11 @@ public class Hero {
             centerY +=speedY;
         }
     }
+
+    /**
+     *Update the X position of the hero
+     *
+     */
     public void updateXPosition(){
         if (speedX < 0) {
             centerX += speedX;
@@ -241,10 +246,14 @@ public class Hero {
             } else {
 
                 background.setPosition((-bg.getBackX ()),0);
-
             }
         }
     }
+
+    /**
+     *Allows the Hero to Jump
+     *
+     */
     public void handleJumping(){
 
         if ( !collide) {
@@ -253,19 +262,21 @@ public class Hero {
             if ((centerY + speedY >= 700 || collide )) {
                 centerY = 700;
                 speedY = 0;
-
                 jumped = false;
             }
-
         }
-
     }
+
+    /**
+     *Check for anything that collides with the hero
+     *
+     * @param box collision box over character
+     */
     public void checkCollision(Box box){
         if(collidingEntity2!=null && collidingEntity2!=box){
             return;
         }
         FloatRect x = box.getRect ();
-
 
         if (rect1==null || x==null){
             return;
@@ -278,28 +289,24 @@ public class Hero {
             collide=true;
             checkTopCollision (x);
             if(collidedTop==false) {
-
                 checkRightCollision (x);
                 checkLeftCollision (x);
             }
-
-
-
         } else {
             noCollision ();
-
-
         }
-
-
     }
 
+    /**
+     *Check for collisions with enemy
+     *
+     * @param enemy the enemy
+     */
     public void checkCollision(Enemy enemy){
         if(collidingEntity!=null && collidingEntity!=enemy){
             return;
         }
         FloatRect x = enemy.getRect ();
-
 
         if (rect1==null || x==null){
             return;
@@ -313,47 +320,61 @@ public class Hero {
             checkRightCollision (x);
             checkLeftCollision (x);
             bounce(enemy);
-
         } else {
             noCollision ();
-
         }
-
-
     }
 
+    /**
+     *Set parameters for no collision
+     *
+     */
     public void noCollision(){
         this.collidingEntity2=null;
         this.collidingEntity=null;
         collidedTop=false;
         collide=false;
-
     }
 
+    /**
+     *Check for collisions on left
+     *
+     * @param x the rectangle
+     */
     public void checkLeftCollision(FloatRect x){
         if((int)rect1.left < x.left ) {
             centerX -= 6;
-
-
         }
     }
+
+    /**
+     *Check for collisions on right
+     *
+     * @param x the rectangle
+     */
     public void checkRightCollision(FloatRect x) {
         if((int)rect1.left+rect1.width > x.left+x.width ){
             centerX+=6;
         }
-        }
+    }
 
+    /**
+     *Check for collisions on top
+     *
+     * @param x the rectangle
+     */
     public void checkTopCollision(FloatRect x){
-        //System.out.println (jumped);
-
         if((int)rect1.top<= (int)x.top-x.height ){
             collide=true;
             collidedTop=true;
-            //System.out.println(collidedTop);
-
         }
     }
 
+    /**
+     *Bounce on Enemy
+     *
+     * @param e Enemy
+     */
     public void bounce(Enemy e) {
         FloatRect x = e.getRect();
         FloatRect ins = rect1.intersection (x);
@@ -370,27 +391,51 @@ public class Hero {
         }
     }
 
-
+    /**
+     *Get the Center x of the quadrilateral
+     *
+     * @return centerX
+     */
     public int getCenterX(){
         return centerX;
     }
+
+    /**
+     *Get the Center y of the quadrilateral
+     *
+     * @return centerY
+     */
     public int getCenterY(){
         return centerY;
     }
 
+    /**
+     *Get the background
+     *
+     * @return bg
+     */
     public Background getBg(){
         return bg;
     }
 
-
+    /**
+     * Get the Health of Hero
+     *
+     * @return maxHealth
+     */
     public int getMaxHealth() {
         return maxHealth;
     }
 
-
+    /**
+     *Get the current health of the Hero
+     *
+     * @return currentHealth
+     */
     public int getCurrentHealth() {
         return currentHealth;
     }
+
     public static void main(String[] args){
         Hero x = new Hero(700,200);
     }

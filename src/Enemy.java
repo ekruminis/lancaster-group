@@ -5,35 +5,36 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Random;
 
+/**
+ *Creates an Enemy
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
+ */
+
 public class Enemy {
-
-
-    public String name;
-    private int x;
+    public String name; //name of enemy
+    private int x; //position
     private int y;
-    int position = 0;
-    FloatRect rect;
-    Vector2f x1;
-    private String FontFile  = "font/FreeSans.ttf";
-    public RectangleShape getRectangle() {
-        return rectangle;
-    }
-
+    FloatRect rect; //collision rectangle
+    Vector2f x1; //vector
+    private String FontFile  = "font/FreeSans.ttf"; //font
     RectangleShape rectangle;
     private int maxHealth, currentHealth, power, speedX, centerX, centerY;
     Game game;
     protected Drawable obj;
-    private String ImageFile="./graphics/heliboy.png";
+    private String ImageFile="./graphics/heliboy.png"; //get bad guy image
 
     private Sprite img;
     Random rand = new Random();
 
-    public void setRect(FloatRect rect) {
-        this.rect = rect;
-    }
-
-
-
+    /**
+     * Creates an Enemy
+     *
+     * @param x x position
+     * @param y y position
+     * @param hero The hero
+     * @param name Name of bad guy
+     */
     public Enemy(int x,int y,Hero hero,String name ){
         this.name=name;
         this.x=x;
@@ -53,11 +54,21 @@ public class Enemy {
         x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
     }
 
+    /**
+     * get image of Enemy
+     *
+     * @return img
+     */
     public Sprite image(){
         return img;
     }
-    //
 
+    /**
+     * Change image of bad guy for fluid movement
+     *
+     * @param ImageFile2 image of bad guy
+     * @return imgTexture
+     */
    public Texture changeImg(String ImageFile2) {
        Texture imgTexture = new Texture ();
        try {
@@ -115,71 +126,137 @@ public class Enemy {
         }
     }
 
+    /**
+     * get max health
+     *
+     * @return maxHealth
+     */
     public int getMaxHealth() {
         return maxHealth;
     }
 
-
+    /**
+     * get current health
+     *
+     * @return currentHealth
+     */
     public int getCurrentHealth() {
         return currentHealth;
     }
 
-
+    /**
+     * get powers
+     *
+     * @return power
+     */
     public int getPower() {
         return power;
     }
+
+    /**
+     * get rectangle for collisions
+     *
+     * @return rect
+     */
     public FloatRect getRect(){
         return rect;
     }
 
+    /**
+     * get speed of travel x
+     *
+     * @return speedX
+     */
     public int getSpeedX() {
         return speedX;
     }
 
-
+    /**
+     * get centre X
+     *
+     * @return centerX
+     */
     public int getCenterX() {
         return centerX;
     }
 
-
+    /**
+     * get centre Y
+     *
+     * @return centerY
+     */
     public int getCenterY() {
         return centerY;
     }
 
+    /**
+     * Set an object
+     *
+     * @param obj object
+     */
     public void setObj(Drawable obj){
        this.obj=obj;
     }
 
-
-
+    /**
+     * Set the health
+     *
+     * @param maxHealth health of Enemy
+     */
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
     }
 
-
+    /**
+     * Set the current health
+     *
+     * @param currentHealth current health of Enemy
+     */
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
     }
 
-
+    /**
+     * Set powers
+     *
+     * @param power power enemy has
+     */
     public void setPower(int power) {
         this.power = power;
     }
 
-
+    /**
+     * set the speed
+     *
+     * @param speedX speed of x travel
+     */
     public void setSpeedX(int speedX) {
         this.speedX = speedX;
     }
 
-
+    /**
+     * set the x center
+     *
+     * @param centerX center of X
+     */
     public void setCenterX(int centerX) {
         this.centerX = centerX;
     }
 
-
+    /**
+     * set the y center
+     *
+     * @param centerY center of Y
+     */
     public void setCenterY(int centerY) {
         this.centerY = centerY;
     }
+
+    /**
+     * draw the window
+     *
+     * @param window The window
+     */
     public void draw(RenderWindow window){
         window.draw(obj);
     }

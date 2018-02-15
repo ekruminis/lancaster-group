@@ -9,53 +9,52 @@ import org.jsfml.window.*;
 import org.jsfml.window.event.*;
 import org.jsfml.graphics.*;
 
-public class Game {
-    private static Background bg1, bg2;
-    private Enemy boss;
-    private Box box1;
+/**
+ *Creates a new window with an environment for the player to move and explore.
+ *
+ *Creates the background, calls the Hero class, Box and Enemy. Collision detection is also included
+ *to detect contacts between projectiles and enemies.
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
+ */
+public class Game{
+
+    private boolean shot = false; //declare shot as false (shot not fired)
+    private String Title = "Let's Play!";
+    private RenderWindow window = new RenderWindow (); //Create the window
+    private Enemy boss; //declare enemy
+    private Box box1; //declare box for player to jump on
     private Box box2;
-    enum State {
-        MENU, GAME
-    }
+    enum State {MENU, GAME}
 
-    State playerChoice = State.GAME;
-
+    State playerChoice = State.GAME; //Players choice is game
     public State getState() {
         return playerChoice;
-    }
+    } // return the players choice
 
-    ArrayList<Enemy> enemies = new ArrayList<> ();
-    ArrayList<Box> boxes = new ArrayList<>();
+    ArrayList<Enemy> enemies = new ArrayList<> (); //create an array of enemies
+    ArrayList<Box> boxes = new ArrayList<>(); //create an array of boxes
 
-    private Projectiles pro;
-    private boolean shot=false;
+    Hero player = new Hero (100, 700); //Call Hero and set co-ordinates
 
-    private String Title = "Let's Play!";
-    private static int fontSize = 48;
-    private int screenWidth = 1600;
-    private int screenHeight = 900;
-    private RenderWindow window = new RenderWindow ();
-    public int xPosition;
-    public int yPosition;
-    Hero player = new Hero (100, 700);
-
-
+    /**
+     *Creates a window with a fixed frame rate and allows for the player to move
+     *
+     *Player can move using the w,a,s,d keys, the background will also move with the player
+     *
+     * @param width width of the window
+     * @param height height of the window
+     */
     public void run(int width, int height) {
         int screenWidth = width;
         int screenHeight = height;
 
-        bg1 = new Background (0, 0);
-        bg2 = new Background (0, 0);
+        window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT); //create window
+        window.setFramerateLimit (60); //set frame limit
+        boss = new Enemy(800,730,player,"Main Boss"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
 
-        window.create (new VideoMode (screenWidth, screenHeight),
-                Title,
-                WindowStyle.DEFAULT);
-
-        window.setFramerateLimit (100);
-        //x = new Enemy (400,730,player,"1");
-        boss = new Enemy(800,730,player,"Main Boss");
-        enemies.add(boss);
-
+        //position of the boxes
         box1 = new Box(1500, 730, player);
         box2 = new Box(1800, 730, player);
         boxes.add(box1);
@@ -64,14 +63,12 @@ public class Game {
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
         while (true) {
-            // Clear the screen
+            // Clear the screen as white
             window.clear (Color.WHITE);
 
             // Following handles player movement
             player.idle ();
-
             player.image ().setPosition (player.getCenterX (), player.getCenterY ());
-
             if (Keyboard.isKeyPressed (Keyboard.Key.A)) {
                 player.moveLeft ();
                 player.image ().setPosition (player.getCenterX (), player.getCenterY ());
@@ -108,11 +105,12 @@ public class Game {
                 shot = true;
             }
 
+            //calls checkCollision for collisions
             player.checkCollision(box1);
             player.checkCollision(box2);
 
             player.update (window);
-            player.image ().draw (window, RenderStates.DEFAULT);
+            player.image().draw (window, RenderStates.DEFAULT);
 
             boss.image ().draw (window,RenderStates.DEFAULT);
             boss.update (player,window);
@@ -137,9 +135,7 @@ public class Game {
             }
 
             player.checkCollision(boss);
-
-            // Update the display with any changes
-            window.display ();
+            window.display ();   // Update the display with any changes
 
             // Handle any events
             for (Event event : window.pollEvents ()) {
@@ -151,9 +147,20 @@ public class Game {
         }
     }
 
+    /**
+     * Return the hero
+     *
+     * @return hero as the player
+     */
     public Hero getHero() {
         return player;
     }
+
+    /**
+     * Return an enemy
+     *
+     * @return enemy as boss
+     */
     public Enemy getEnemy(){
         return boss;
     }
