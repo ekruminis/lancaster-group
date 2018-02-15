@@ -5,35 +5,39 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Random;
 
+/**
+ *Creates a box that can be used for platforms
+ *
+ * @version  1.0 Build 1 Feb 12, 2018.
+ */
 public class Box {
-
-
     public String name;
-    private int x;
+    private int x;  //positions
     private int y;
-    int position = 0;
-    FloatRect rect;
-    Vector2f x1;
+    FloatRect rect; //rectangle
+    Vector2f x1;    //vector
 
-    public RectangleShape getRectangle() {
-        return rectangle;
-    }
-
-    RectangleShape rectangle;
-    private int speedX, centerX, centerY;
-    Game game;
-    protected Drawable obj;
-    private String ImageFile="./graphics/box.png";
+    private String ImageFile="./graphics/box.png"; //get box graphic
 
     private Sprite img;
     Random rand = new Random();
 
+    /**
+     * set rectangle
+     *
+     * @param rect rectangle
+     */
     public void setRect(FloatRect rect) {
         this.rect = rect;
     }
 
-
-
+    /**
+     * Creates a box
+     *
+     * @param x x location
+     * @param y y location
+     * @param hero Hero
+     */
     public Box(int x,int y,Hero hero){
         this.x=x;
         this.y=y;
@@ -50,18 +54,11 @@ public class Box {
         img.setPosition (x,y);
 
         x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
-
-
-
-
-
     }
 
     public Sprite image(){
         return img;
     }
-    //
-
     public Texture changeImg(String ImageFile2) {
         Texture imgTexture = new Texture ();
         try {
@@ -99,50 +96,15 @@ public class Box {
         if(hero.getCenterX ()>500){
             img.setPosition (x-hero.getBg ().getBackX (),y);
         }
-
         window.draw (img);
-
     }
 
-
+    /**
+     *get rectangle
+     *
+     * @return rect
+     */
     public FloatRect getRect(){
         return rect;
-    }
-
-    public int getSpeedX() {
-        return speedX;
-    }
-
-
-    public int getCenterX() {
-        return centerX;
-    }
-
-
-    public int getCenterY() {
-        return centerY;
-    }
-
-    public void setObj(Drawable obj){
-        this.obj=obj;
-    }
-
-
-
-    public void setSpeedX(int speedX) {
-        this.speedX = speedX;
-    }
-
-
-    public void setCenterX(int centerX) {
-        this.centerX = centerX;
-    }
-
-
-    public void setCenterY(int centerY) {
-        this.centerY = centerY;
-    }
-    public void draw(RenderWindow window){
-        window.draw(obj);
     }
 }
