@@ -31,7 +31,7 @@ public class Background {
      */
     public Texture loadTextures(){
         try {
-            texture1.loadFromFile(Paths.get("./graphics/background2.png"));
+            texture1.loadFromFile(Paths.get("./graphics/backgrounds/S3L1.png"));
         } catch(IOException ex) {
             //Ouch! something went wrong
             ex.printStackTrace();

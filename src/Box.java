@@ -1,5 +1,6 @@
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
+import org.jsfml.window.Keyboard;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -16,8 +17,10 @@ public class Box {
     private int y;
     FloatRect rect; //rectangle
     Vector2f x1;    //vector
+    private int height;
+    private int width;
 
-    private String ImageFile="./graphics/box.png"; //get box graphic
+    private String ImageFile="./graphics/objects/box.png"; //get box graphic
 
     private Sprite img;
     Random rand = new Random();
@@ -70,29 +73,18 @@ public class Box {
         return imgTexture;
     }
     public void update(Hero hero,RenderWindow window) {
+        rect = new FloatRect (x-hero.getBg ().getBackX (),y,90,80);
+        FloatRect u = hero.getRect1();
+        FloatRect ins = hero.getRect1 ().intersection (rect);
 
-        /*if(hero.getCenterX () < x){
-            position-=3;
-        } else if(hero.getCenterX () > x){
-            position+=3;
-        } else {
-
-        }*/
         if(hero==null){
             System.out.println ("I am hero I am null");
         }
         if(hero.getBg ()==null){
             System.out.println ("I am background I dont exist :(");
         }
-        rect = new FloatRect (x-hero.getBg ().getBackX (),y,90,80);
 
 
-        //  rectangle = new RectangleShape(x1);
-        //  rectangle.setPosition (this.x,this.y);
-        //  rectangle.setFillColor (Color.RED);
-        FloatRect ins = hero.getRect1 ().intersection (rect);
-        // System.out.println ("Enemy "+"height "+rect.height+"width "+rect.width+"left "+rect.left+"top "+rect.top);
-        // System.out.println ("Hero "+"height "+hero.getRect1 ().height+"width "+hero.getRect1 ().width+"left "+hero.getRect1 ().left+"top "+hero.getRect1 ().top);
         if(hero.getCenterX ()>500){
             img.setPosition (x-hero.getBg ().getBackX (),y);
         }

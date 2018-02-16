@@ -23,7 +23,6 @@ public class Projectiles {
     double posy;  // m
     double posx2 = 0;
     double time = 0; // s
-    private String ImageFile = "./graphics/projectile2.png";
     private Sprite img;
     private boolean stoped=false;
     private int x,y;
@@ -56,10 +55,19 @@ public class Projectiles {
     public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
         Texture imgTexture = new Texture ();
-        try {
-            imgTexture.loadFromFile (Paths.get (ImageFile));
-        } catch (IOException ex) {
-            ex.printStackTrace ();
+        if(type == 1) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/pingpongball.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        if(type == 2) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bullet.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
         }
         imgTexture.setSmooth (true);
         direction = directionChoice;
@@ -88,7 +96,7 @@ public class Projectiles {
                 posy -= vy * dt;
                 time += dt;
                 img.setPosition((int) posx, (int) posy);
-                rect = new FloatRect ((float)posx, (float)posy,67,34);
+                rect = new FloatRect ((float)posx, (float)posy,50,50);
             }
 
             if (posy >= 780) {
@@ -112,7 +120,7 @@ public class Projectiles {
                     posx -= 18;
 				}
                 img.setPosition((int) posx, (int) posy);
-                rect = new FloatRect ((float)posx, (float)posy,67,34); // 67x34 is just img dimensions
+                rect = new FloatRect ((float)posx, (float)posy,50,50); // 67x34 is just img dimensions
             }
 
             if (posx >= posx2+1600 || posx <= posx2-600) {

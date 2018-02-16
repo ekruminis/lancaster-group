@@ -29,7 +29,7 @@ public class Hero {
     private int speedX = 0;  //speed
     private int speedY = 1;
     private Sprite img;
-    private String ImageFile = "./graphics/player/idle.png"; //get hero graphic
+    private String ImageFile = "./graphics/characters/player/idle.png"; //get hero graphic
     private Drawable obj;
     private BiConsumer<Float, Float> setPosition;
     private Background bg = new Background (0,0);
@@ -60,7 +60,7 @@ public class Hero {
     }
 
     //Rectangle for collisions (surrounds hero)
-    FloatRect rect1 = new FloatRect (100,700,80,110);
+    FloatRect rect1 = new FloatRect (0,0,0,0);
 
     /**
      *Loads the textures and position of the Hero
@@ -72,6 +72,7 @@ public class Hero {
         this.centerX = x;
         this.centerY = y;
         this.currentHealth = 100;
+        rect1 = new FloatRect (100,630,80,110);
          imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (ImageFile));
@@ -83,7 +84,6 @@ public class Hero {
         img = new Sprite (imgTexture);
         img.setOrigin (Vector2f.div (new Vector2f (imgTexture.getSize ()), 2));
         img.setPosition (x, y);
-
         // Store references to object and key methods
         obj = img;
         setPosition = img::setPosition;
@@ -131,7 +131,7 @@ public class Hero {
      */
     public void moveLeft() {
            speedX = -6;
-           Texture r1 = changeImg ("./graphics/player/leftWalk1.png");
+           Texture r1 = changeImg ("./graphics/characters/player/leftWalk1.png");
            img = new Sprite (r1);
     }
 
@@ -141,7 +141,7 @@ public class Hero {
      */
     public void moveRight() {
             speedX = 6;
-            Texture r1 = changeImg ("./graphics/player/rightWalk1.png");
+            Texture r1 = changeImg ("./graphics/characters/player/rightWalk1.png");
             img = new Sprite (r1);
             if (centerX > startScrolling)
                 bg.setBackX (bg.getBackX () + 6);
@@ -154,7 +154,7 @@ public class Hero {
      */
     public void idle() {
         speedX = 0;
-        Texture i = changeImg("./graphics/player/idle.png");
+        Texture i = changeImg("./graphics/characters/player/idle.png");
         img = new Sprite(i);
 
     }
@@ -180,11 +180,6 @@ public class Hero {
         updateXPosition ();
         updateYPosition ();  // Updates Y Position
         handleJumping (); // Handles Jumping
-
-        // Prevents going beyond X coordinate of 0
-        if (centerX + speedX <= 60) {
-            centerX = 60;
-        }
 
         Font fontStyle = new Font();  //load font
         try {
@@ -215,8 +210,8 @@ public class Hero {
      *
      */
     public void updateYPosition(){
-        if (centerY + speedY >= 700) {
-            centerY = 700;
+        if (centerY + speedY >= 630) {
+            centerY = 630;
 
             rect1= new FloatRect (centerX,centerY,80,110);
         }else if(!collide){
@@ -224,8 +219,8 @@ public class Hero {
             centerY += speedY;
 
             rect1= new FloatRect (centerX,centerY,80,110);
-        }else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
-
+        }
+        else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
             speedY=-20;
             centerY +=speedY;
         }
@@ -236,15 +231,29 @@ public class Hero {
      *
      */
     public void updateXPosition(){
-        if (speedX < 0) {
+        if (centerX + speedX <= 60) {
+            centerX = 60;
+        }
+        if(centerX + bg.getBackX() > 4890) {
+            bg.setBackX(4890-startScrolling);
+            if(centerX + speedX >= 1500) {
+                centerX = 1500;
+                rect1= new FloatRect (centerX,centerY,80,110);
+            }
+            if(centerX < 1504) {
+                centerX+=speedX;
+                rect1= new FloatRect (centerX,centerY,80,110);
+            }
+        }
+        else if (speedX < 0) {
             centerX += speedX;
             rect1= new FloatRect (centerX,centerY,80,110);
-        } else {
+        }
+        else {
             if (centerX <= startScrolling) {
                 centerX += speedX;
                 rect1= new FloatRect (centerX,centerY,80,110);
             } else {
-
                 background.setPosition((-bg.getBackX ()),0);
             }
         }
@@ -258,9 +267,8 @@ public class Hero {
 
         if ( !collide) {
             speedY += 1;
-
-            if ((centerY + speedY >= 700 || collide )) {
-                centerY = 700;
+            if ((centerY + speedY >= 630 || collide )) {
+                centerY = 630;
                 speedY = 0;
                 jumped = false;
             }
@@ -378,12 +386,8 @@ public class Hero {
     public void bounce(Enemy e) {
         FloatRect x = e.getRect();
         FloatRect ins = rect1.intersection (x);
-        // ???????? yeah i know.. this basically checks if the player is above the enemy but between him.. then it automatically jumps and deals dmg.. i have no idea why i divided width by 2 and
-        // then added it to player, but it makes the collision more accurate..
         if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
             if(ins!=null) {
-                // for some reason it stops jumping after jumping 15 or so times????? idk why.. it also slides on x-axis a tiny bit when close to the very corners
-                // probably not an issue as enemy will be moving, so getting 10+ jumps on him should be impossible and sliding is actually good.
                 e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
                 speedY = -20;
                 centerY += speedY;
@@ -398,6 +402,18 @@ public class Hero {
      */
     public int getCenterX(){
         return centerX;
+    }
+
+    public void setSpeedY(int a) {
+        speedY = a;
+    }
+
+    public int getSpeedY() {
+        return speedY;
+    }
+
+    public void setCenterY(int a) {
+        centerY = a;
     }
 
     /**
@@ -435,9 +451,4 @@ public class Hero {
     public int getCurrentHealth() {
         return currentHealth;
     }
-
-    public static void main(String[] args){
-        Hero x = new Hero(700,200);
-    }
-
 }

@@ -22,7 +22,7 @@ public class Enemy {
     private int maxHealth, currentHealth, power, speedX, centerX, centerY;
     Game game;
     protected Drawable obj;
-    private String ImageFile="./graphics/heliboy.png"; //get bad guy image
+    private String ImageFile="./graphics/characters/boss/miniGeneral/boss1.png"; //get bad guy image
 
     private Sprite img;
     Random rand = new Random();
