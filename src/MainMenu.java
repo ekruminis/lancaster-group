@@ -2,6 +2,7 @@
 import java.io.IOException;
 import java.nio.file.*;
 
+import org.jsfml.audio.Music;
 import org.jsfml.system.*;
 import org.jsfml.window.*;
 import org.jsfml.window.event.*;
@@ -21,7 +22,8 @@ class MainMenu {
     private int screenWidth         = 1600;                 //Screen Width
     private int screenHeight        = 900;                  //Screen Height
     private RenderWindow window     = new RenderWindow ();  //Instance of Window
-
+    Music s = new Music();
+    Music s2 = new Music();
     /**
      *Load the appropriate background depending on the screenWidth: 1024(big), 1600(medium) or 1920(small).
      *
@@ -31,12 +33,7 @@ class MainMenu {
         Texture texture1 = new Texture();
         try {
             //Try to load the texture from folder 'mainMenu'"
-            if(screenWidth == 1024)
-              texture1.loadFromFile(Paths.get("./mainMenu/titleimgbig.png"));
-            else if(screenWidth == 1600)
               texture1.loadFromFile(Paths.get("./mainMenu/titleimgmid.png"));
-            else if(screenWidth == 1920)
-              texture1.loadFromFile(Paths.get("./mainMenu/titleimgsmall.png"));
             //Texture was loaded successfully
         } catch(IOException ex) {
             //"Houston, we have a problem."
@@ -54,6 +51,13 @@ class MainMenu {
      *
      */
     public void run ( ) {
+        try {
+            s2.openFromFile(Paths.get("./audio/intro.ogg"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.play();
         position = 0; //set the position to start
         noItemsInMenu = 3;  //set number of items
         Text[] text = new Text[noItemsInMenu]; //Create the array for text
@@ -86,7 +90,8 @@ class MainMenu {
         text[2].setColor (Color.YELLOW);
 
         //Main loop
-        while (window.isOpen ()){window.clear ();
+        while (window.isOpen ()){
+            window.clear ();
         window.draw (loadBackground());
 
             for(int i=0;i<3;i++)
@@ -99,6 +104,13 @@ class MainMenu {
                     window.close ();
                 }
                 if (Keyboard.isKeyPressed (Keyboard.Key.W)) {
+                    try {
+                        s.openFromFile(Paths.get("./audio/menumove.wav"));
+                    } catch(IOException ex) {
+                        //"Houston, we have a problem."
+                        ex.printStackTrace();
+                    }
+                    s.play();
                     if (position-1 >=0) {
                         text[position].setColor (Color.YELLOW);
                         position--;
@@ -107,6 +119,13 @@ class MainMenu {
                     }
                 }
                 if (Keyboard.isKeyPressed (Keyboard.Key.S)) {
+                    try {
+                        s.openFromFile(Paths.get("./audio/menumove.wav"));
+                    } catch(IOException ex) {
+                        //"Houston, we have a problem."
+                        ex.printStackTrace();
+                    }
+                    s.play();
                     if (position+1 < noItemsInMenu) {
                         text[position].setColor (Color.YELLOW);
                         position++;
@@ -115,8 +134,16 @@ class MainMenu {
                     }
                 }
                 if (Keyboard.isKeyPressed (Keyboard.Key.SPACE)) {
+                    try {
+                        s.openFromFile(Paths.get("./audio/menupick.wav"));
+                    } catch(IOException ex) {
+                        //"Houston, we have a problem."
+                        ex.printStackTrace();
+                    }
+                    s.play();
                     if (position == 0) {
                       window.close ();
+                      s2.stop();
                       Game g = new Game( ); //calls game
                       g.run(getWidth(), getHeight());
                     } else if (position == 1) {
@@ -139,95 +166,7 @@ class MainMenu {
      *
      */
     private void optionMenu() {
-        position = 0;
-        noItemsInMenu = 4;
-        Text[] text = new Text[noItemsInMenu];
-        Font sansRegular = new Font ();
-        try {
-            sansRegular.loadFromFile (
-                    Paths.get (FontFile));
-        } catch (IOException ex) {
-            ex.printStackTrace ();
-        }
-        window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT);
-        window.setFramerateLimit (30);
-
-        text[0] = new Text ("1024x768", sansRegular, 32);
-        text[0].setStyle (Text.ITALIC);
-        text[0].setPosition (screenWidth/3, screenHeight-(screenHeight-200));
-        text[0].setColor (Color.RED);
-
-        text[1] = new Text ("1600x900", sansRegular, 32);
-        FloatRect text2bounds = text[1].getLocalBounds ();
-        text[1].setStyle (Text.ITALIC);
-        text[1].setOrigin (text2bounds.width / 2, text2bounds.height / 2);
-        text[1].setPosition (screenWidth/3, screenHeight-(screenHeight-350));
-        text[1].setColor (Color.YELLOW);
-
-        text[2] = new Text ("1920x1080", sansRegular, 32);
-        text[2].setStyle (Text.ITALIC);
-        text[2].setPosition (screenWidth/3, screenHeight-(screenHeight-500));
-        text[2].setColor (Color.YELLOW);
-
-        text[3] = new Text ("Exit", sansRegular, 32);
-        text[3].setStyle (Text.ITALIC);
-        text[3].setPosition (screenWidth/3, screenHeight-(screenHeight-650));
-        text[3].setColor (Color.YELLOW);
-
-        //Main loop for option menu
-        while (window.isOpen ()) { window.clear ();
-            window.draw (loadBackground());
-
-            for(int i=0;i<4;i++)
-            window.draw (text[i]);
-            window.display ();
-
-            for (Event event : window.pollEvents ()) {
-                if (event.type == Event.Type.CLOSED) {
-                    // the user pressed the close button
-                    window.close ();
-                }
-                if (Keyboard.isKeyPressed (Keyboard.Key.W)) {
-                    if (position-1 >=0) {
-                        text[position].setColor (Color.YELLOW);
-                        position--;
-                        text[position].setColor (Color.RED);
-                        break;
-                    }
-                }
-                if (Keyboard.isKeyPressed (Keyboard.Key.S)) {
-                    if (position+1 < noItemsInMenu) {
-                        text[position].setColor (Color.YELLOW);
-                        position++;
-                        text[position].setColor (Color.RED);
-                        break;
-                    }
-                }
-                if (Keyboard.isKeyPressed (Keyboard.Key.SPACE)) {
-                    if (position == 0) {
-                        screenWidth = 1024;
-                        screenHeight = 768;
-                        window.close();
-                        optionMenu();
-
-                    }  else if (position == 1) {
-                      screenWidth = 1600;
-                      screenHeight = 900;
-                      window.close();
-                      optionMenu();
-                    } else if (position == 2) {
-                      screenWidth = 1920;
-                      screenHeight = 1080;
-                      window.close();
-                      optionMenu();
-                    } else if (position == 3) {
-                      window.close();
-                      window.close();
-                      run();
-                    }
-                }
-            }
-        }
+        // empty for now
     }
 
     /**

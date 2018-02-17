@@ -1,3 +1,4 @@
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 import org.jsfml.window.Keyboard;
@@ -15,10 +16,13 @@ public class Box {
     public String name;
     private int x;  //positions
     private int y;
+    private int z;
+    private int q;
     FloatRect rect; //rectangle
     Vector2f x1;    //vector
     private int height;
     private int width;
+    Music s = new Music();
 
     private String ImageFile="./graphics/objects/box.png"; //get box graphic
 
@@ -41,9 +45,11 @@ public class Box {
      * @param y y location
      * @param hero Hero
      */
-    public Box(int x,int y,Hero hero){
+    public Box(int x,int y,int z, int q, Hero hero){
         this.x=x;
         this.y=y;
+        this.z=z;
+        this.q=q;
 
         Texture imgTexture = new Texture ();
         try {
@@ -73,7 +79,7 @@ public class Box {
         return imgTexture;
     }
     public void update(Hero hero,RenderWindow window) {
-        rect = new FloatRect (x-hero.getBg ().getBackX (),y,90,80);
+        rect = new FloatRect (x-hero.getBg ().getBackX (),y,z,q);
         FloatRect u = hero.getRect1();
         FloatRect ins = hero.getRect1 ().intersection (rect);
 

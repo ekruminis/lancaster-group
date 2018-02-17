@@ -6,6 +6,7 @@ import org.jsfml.window.Keyboard;
 import org.jsfml.window.VideoMode;
 import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
+import org.jsfml.audio.*;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -40,6 +41,8 @@ public class Hero {
     private int maxHealth, currentHealth;
     private Texture imgTexture;
     private boolean collide=false;
+    Music s = new Music();
+    Music s2 = new Music();
 
     /**
      *get the textures
@@ -156,7 +159,6 @@ public class Hero {
         speedX = 0;
         Texture i = changeImg("./graphics/characters/player/idle.png");
         img = new Sprite(i);
-
     }
 
     /**
@@ -388,7 +390,21 @@ public class Hero {
         FloatRect ins = rect1.intersection (x);
         if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
             if(ins!=null) {
+                try {
+                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s.play();
                 e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                try {
+                    s2.openFromFile(Paths.get("./audio/hit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s2.play();
                 speedY = -20;
                 centerY += speedY;
             }

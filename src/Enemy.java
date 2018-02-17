@@ -1,3 +1,4 @@
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 
@@ -26,6 +27,7 @@ public class Enemy {
 
     private Sprite img;
     Random rand = new Random();
+    Music s = new Music();
 
     /**
      * Creates an Enemy
@@ -120,6 +122,13 @@ public class Enemy {
         window.draw (img);
 
         if(this.currentHealth <= 0 && this.currentHealth > -9000) {
+            try {
+                s.openFromFile(Paths.get("./audio/dead.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
             this.rect = new FloatRect(0,0,0,0);
             this.image().rotate(90);
             this.setCurrentHealth(-10000);

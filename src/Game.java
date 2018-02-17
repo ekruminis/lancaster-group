@@ -4,6 +4,7 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.function.*;
 
+import org.jsfml.audio.Music;
 import org.jsfml.system.*;
 import org.jsfml.window.*;
 import org.jsfml.window.event.*;
@@ -26,6 +27,8 @@ public class Game{
     private Box box1; //declare box for player to jump on
     private Box box2;
     enum State {MENU, GAME}
+    Music s = new Music();
+    Music s2 = new Music();
 
     State playerChoice = State.GAME; //Players choice is game
     public State getState() {
@@ -48,7 +51,6 @@ public class Game{
     public void run(int width, int height) {
         int screenWidth = width;
         int screenHeight = height;
-
         window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT); //create window
         window.setFramerateLimit (120); //set frame limit
         level1();
@@ -94,6 +96,10 @@ public class Game{
                 pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(),player, true, window, 2));
                 shot = true;
             }
+            if (Keyboard.isKeyPressed (Keyboard.Key.I)) {
+                System.out.println("X=" + player.getCenterX());
+                System.out.println("Y=" + player.getCenterY());
+            }
 
             player.update (window);
             player.image().draw (window, RenderStates.DEFAULT);
@@ -130,20 +136,27 @@ public class Game{
                 if (event.type == Event.Type.CLOSED) {
                     // the user pressed the close button
                     System.exit (0);
+                    s2.stop();
                 }
             }
         }
     }
 
     private void level1() {
-        boss = new Enemy(800,660,player,"Main Boss"); //create boss from enemy class
+        boss = new Enemy(2000,660,player,"Main Boss"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box1 = new Box(1500, 660, player);
-        box2 = new Box(1800, 660, player);
-        boxes.add(box1);
+        box2 = new Box(1800, 660, 80,90, player);
         boxes.add(box2);
+        try {
+            s2.openFromFile(Paths.get("./audio/b1.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(40);
+        s2.play();
     }
 
     /**

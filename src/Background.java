@@ -1,3 +1,4 @@
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.Texture;
 import org.jsfml.system.Vector2i;
 
@@ -18,6 +19,7 @@ public class Background {
     private int backY;
     private int speedX;
     Texture texture1 = new Texture();
+    Music s = new Music();
 
     public Background(int x,int y){
         this.backX=x; //x location

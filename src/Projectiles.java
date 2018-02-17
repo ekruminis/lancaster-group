@@ -1,3 +1,6 @@
+import org.jsfml.audio.Sound;
+import org.jsfml.audio.SoundBuffer;
+import org.jsfml.audio.Music;
 import org.jsfml.graphics.*;
 import org.jsfml.system.Clock;
 import org.jsfml.system.Time;
@@ -41,6 +44,8 @@ public class Projectiles {
     int typeShot = 0;
     FloatRect rect;
     int n = 0;
+    Music s = new Music();
+    Music s2 = new Music();
 
     /**
      * Creates a projectile
@@ -61,6 +66,13 @@ public class Projectiles {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            try {
+                s.openFromFile(Paths.get("./audio/rockthrow.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
         }
         if(type == 2) {
             try {
@@ -68,6 +80,13 @@ public class Projectiles {
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+            try {
+                s.openFromFile(Paths.get("./audio/bullet.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
         }
         imgTexture.setSmooth (true);
         direction = directionChoice;
@@ -127,6 +146,7 @@ public class Projectiles {
                 stoped = true;
                 img = null;
                 rect = null;
+                s.stop();
             }
         }
     }
@@ -142,6 +162,13 @@ public class Projectiles {
             img = new Sprite();
             enemy.setCurrentHealth(enemy.getCurrentHealth()-10);
             n = 1;
+            try {
+                s2.openFromFile(Paths.get("./audio/hit.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s2.play();
         }
     }
 
