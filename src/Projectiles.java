@@ -46,6 +46,10 @@ public class Projectiles {
     int n = 0;
     Music s = new Music();
     Music s2 = new Music();
+    Music s3 = new Music();
+    Hero player;
+    Clock boom = new Clock();
+    Texture explosion = new Texture();
 
     /**
      * Creates a projectile
@@ -59,6 +63,7 @@ public class Projectiles {
      */
     public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
+        player = hero;
         Texture imgTexture = new Texture ();
         if(type == 1) {
             try {
@@ -88,6 +93,25 @@ public class Projectiles {
             }
             s.play();
         }
+        if(type == 3) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/pingpongball.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                s.openFromFile(Paths.get("./audio/bomb.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
+            try {
+                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
         imgTexture.setSmooth (true);
         direction = directionChoice;
         img = new Sprite (imgTexture);
@@ -96,6 +120,7 @@ public class Projectiles {
         posy = hero.getCenterY();
         posx2 = hero.getCenterX();
         img.setPosition (x, y);
+
     }
 
     /**
@@ -149,6 +174,40 @@ public class Projectiles {
                 s.stop();
             }
         }
+        // 3 -> shoots bombs
+        if(typeShot == 3) {
+            if (!stoped) {
+                window.draw(img);
+                if (direction == true) // true shoots right
+                    posx += vx * dt;
+                if (direction == false) // false shoots left/
+                    posx -= vx * dt;
+                posy -= vy * dt;
+                time += dt;
+                img.setPosition((int) posx, (int) posy);
+                rect = new FloatRect ((float)posx, (float)posy,50,50);
+            }
+            if(boom.getElapsedTime().asSeconds() >= 3d) {
+                img = new Sprite();
+                rect = new FloatRect(0,0,0,0);
+                img = null;
+                rect = null;
+            }
+            else if(boom.getElapsedTime().asSeconds() >= 2) {
+                rect = new FloatRect((float)posx-80, (float)posy-120, 212,210);
+                img = new Sprite(explosion);
+                img.setPosition((float)posx-80, (float)posy-120);
+                window.draw(img);
+            }
+            else if (posy >= 680) {
+                stoped = true;
+                draw(window);
+                img.setPosition((float)posx, (float) posy);
+                rect = new FloatRect((float) posx, (float) posy, 50, 50);
+            }
+            // change speed in y
+            vy -= 9.82 * dt; // gravity
+        }
     }
 
     /**
@@ -158,9 +217,18 @@ public class Projectiles {
      */
     public void checkCollision(Enemy enemy){
         FloatRect ins = enemy.getRect().intersection (rect);
-        if(enemy.getCurrentHealth() > 0 && ins!=null && n == 0) {
-            img = new Sprite();
-            enemy.setCurrentHealth(enemy.getCurrentHealth()-10);
+        if(ins!=null && n == 0) {
+            if(typeShot == 1) {
+                img = new Sprite();
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
+            }
+            else if(typeShot == 2) {
+                img = new Sprite();
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
+            }
+            else if(typeShot == 3) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
+            }
             n = 1;
             try {
                 s2.openFromFile(Paths.get("./audio/hit.wav"));

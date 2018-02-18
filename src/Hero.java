@@ -432,6 +432,10 @@ public class Hero {
         centerY = a;
     }
 
+    public int getSpeedX() {
+        return speedX;
+    }
+
     /**
      *Get the Center y of the quadrilateral
      *

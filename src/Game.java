@@ -96,8 +96,14 @@ public class Game{
                 pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(),player, true, window, 2));
                 shot = true;
             }
+            if (Keyboard.isKeyPressed (Keyboard.Key.M) && dropped == true) {
+                dropped = false;
+                pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(),player, true, window, 3));
+                shot = true;
+            }
+            // prints current co-ordinates
             if (Keyboard.isKeyPressed (Keyboard.Key.I)) {
-                System.out.println("X=" + player.getCenterX());
+                System.out.println("X=" + (player.getCenterX() + player.getBg().getBackX()));
                 System.out.println("Y=" + player.getCenterY());
             }
 
@@ -150,7 +156,7 @@ public class Game{
         box2 = new Box(1800, 660, 80,90, player);
         boxes.add(box2);
         try {
-            s2.openFromFile(Paths.get("./audio/b1.wav"));
+            s2.openFromFile(Paths.get("./audio/b3.wav"));
         } catch(IOException ex) {
             //"Houston, we have a problem."
             ex.printStackTrace();
