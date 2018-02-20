@@ -8,6 +8,7 @@ import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.audio.*;
 
+import javax.xml.bind.SchemaOutputResolver;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -43,8 +44,10 @@ public class Hero {
     private boolean collide=false;
     Music s = new Music();
     Music s2 = new Music();
-    int endX1;
-    int endX2;
+    int endX1; // first end, so after you can move full length of the screen
+    int endX2; // second end, this is the point where the very edge of the screen is
+    int yval2; // new y value (when on top of box)
+    int inity; // previous/initial y value
 
     /**
      *get the textures
@@ -80,8 +83,10 @@ public class Hero {
         this.endX1 = end1;
         this.endX2 = end2;
         this.ImageFile = heroImg;
+        this.yval2 = y;
+        this.inity = y;
         rect1 = new FloatRect (100,630,80,110);
-         imgTexture = new Texture ();
+        imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (heroImg));
         } catch (IOException ex) {
@@ -138,9 +143,9 @@ public class Hero {
      *
      */
     public void moveLeft() {
-           speedX = -6;
-           Texture r1 = changeImg ("./graphics/characters/player/leftWalk1.png");
-           img = new Sprite (r1);
+        speedX = -6;
+        Texture r1 = changeImg ("./graphics/characters/player/leftWalk1.png");
+        img = new Sprite (r1);
     }
 
     /**
@@ -148,12 +153,12 @@ public class Hero {
      *
      */
     public void moveRight() {
-            speedX = 6;
-            Texture r1 = changeImg ("./graphics/characters/player/rightWalk1.png");
-            img = new Sprite (r1);
-            if (centerX > startScrolling)
-                bg.setBackX (bg.getBackX () + 6);
-            bg.update ();
+        speedX = 6;
+        Texture r1 = changeImg ("./graphics/characters/player/rightWalk1.png");
+        img = new Sprite (r1);
+        if (centerX > startScrolling)
+            bg.setBackX (bg.getBackX () + 6);
+        bg.update ();
     }
 
     /**
@@ -186,7 +191,7 @@ public class Hero {
         bg.update (); //update X and scroll background accordingly
         updateXPosition ();
         updateYPosition ();  // Updates Y Position
-        handleJumping (); // Handles Jumping
+        handleJumping(); // Handles Jumping
 
         Font fontStyle = new Font();  //load font
         try {
@@ -217,19 +222,13 @@ public class Hero {
      *
      */
     public void updateYPosition(){
-        if (centerY + speedY >= 630) {
-            centerY = 630;
+        if (centerY + speedY >= yval2) {
+            centerY = yval2;
 
             rect1= new FloatRect (centerX,centerY,80,110);
-        }else if(!collide){
-
+        }else {
             centerY += speedY;
-
             rect1= new FloatRect (centerX,centerY,80,110);
-        }
-        else if((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop)){
-            speedY=-20;
-            centerY +=speedY;
         }
     }
 
@@ -271,14 +270,11 @@ public class Hero {
      *
      */
     public void handleJumping(){
-
-        if ( !collide) {
-            speedY += 1;
-            if ((centerY + speedY >= 630 || collide )) {
-                centerY = 630;
-                speedY = 0;
-                jumped = false;
-            }
+        speedY += 1;
+        if ((centerY + speedY >= yval2)) {
+            centerY = yval2;
+            speedY = 0;
+            jumped = false;
         }
     }
 
@@ -308,7 +304,9 @@ public class Hero {
                 checkLeftCollision (x);
             }
         } else {
+            collide = false;
             noCollision ();
+            yval2 = inity;
         }
     }
 
@@ -317,26 +315,26 @@ public class Hero {
      *
      * @param enemy the enemy
      */
-    public void checkCollision(Enemy enemy){
-        if(collidingEntity!=null && collidingEntity!=enemy){
+    public void checkCollision(Enemy enemy) {
+        if (collidingEntity != null && collidingEntity != enemy) {
             return;
         }
-        FloatRect x = enemy.getRect ();
+        FloatRect x = enemy.getRect();
 
-        if (rect1==null || x==null){
+        if (rect1 == null || x == null) {
             return;
         }
 
-        FloatRect ins = rect1.intersection (x);
+        FloatRect ins = rect1.intersection(x);
 
-        if(ins!=null) {
-            this.collidingEntity= enemy;
-            collide=true;
-            checkRightCollision (x);
-            checkLeftCollision (x);
+        if (ins != null) {
+            this.collidingEntity = enemy;
+            collide = true;
+            checkRightCollision(x);
+            checkLeftCollision(x);
             bounce(enemy);
         } else {
-            noCollision ();
+            noCollision();
         }
     }
 
@@ -382,6 +380,7 @@ public class Hero {
         if((int)rect1.top<= (int)x.top-x.height ){
             collide=true;
             collidedTop=true;
+            yval2 = (int)x.top - (int)x.height;
         }
     }
 
@@ -466,6 +465,10 @@ public class Hero {
      */
     public int getMaxHealth() {
         return maxHealth;
+    }
+
+    public boolean getCollision(){
+        return collide;
     }
 
     /**

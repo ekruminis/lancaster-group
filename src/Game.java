@@ -180,8 +180,10 @@ public class Game{
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(1800, 660, 80,90, player);
+        box1 = new Box(1150, 600, 80, 105, player);
+        box2 = new Box(1000, 660, 80,105, player); // the q coordinates are kinda weird, maybe add an extra +15 or so to the actual dimensions?
         boxes.add(box2);
+        boxes.add(box1);
         try {
             s2.openFromFile(Paths.get("./audio/b3.wav"));
         } catch(IOException ex) {
@@ -202,8 +204,8 @@ public class Game{
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
+        box2 = new Box(3300, 660, 80,105, player);
+        Box box3 = new Box(500, 660, 80, 105, player);
         boxes.add(box2);
         try {
             s2.openFromFile(Paths.get("./audio/b5.wav"));
@@ -225,8 +227,8 @@ public class Game{
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
+        box2 = new Box(3300, 660, 80,105, player);
+        Box box3 = new Box(500, 660, 80, 105, player);
         boxes.add(box2);
         try {
             s2.openFromFile(Paths.get("./audio/b4.wav"));
@@ -248,8 +250,8 @@ public class Game{
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
+        box2 = new Box(3300, 660, 80,105, player);
+        Box box3 = new Box(500, 660, 80, 105, player);
         boxes.add(box2);
         try {
             s2.openFromFile(Paths.get("./audio/b6.ogg"));
