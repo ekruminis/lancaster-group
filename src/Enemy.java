@@ -4,6 +4,7 @@ import org.jsfml.system.Vector2f;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -13,7 +14,6 @@ import java.util.Random;
  */
 
 public class Enemy {
-    public String name; //name of enemy
     private int x; //position
     private int y;
     FloatRect rect; //collision rectangle
@@ -23,37 +23,35 @@ public class Enemy {
     private int maxHealth, currentHealth, power, speedX, centerX, centerY;
     Game game;
     protected Drawable obj;
-    private String ImageFile="./graphics/characters/boss/miniGeneral/boss1.png"; //get bad guy image
+
+    public FloatRect getRay() {
+        return Ray;
+    }
+
+    FloatRect Ray;
 
     private Sprite img;
     Random rand = new Random();
     Music s = new Music();
-
+    FloatRect circle;
+    boolean alive = true;
+    private String ImageFile;
     /**
      * Creates an Enemy
      *
      * @param x x position
      * @param y y position
      * @param hero The hero
-     * @param name Name of bad guy
      */
-    public Enemy(int x,int y,Hero hero,String name ){
-        this.name=name;
+    public Enemy(int x,int y,Hero hero,String bossname){
         this.x=x;
         this.y=y;
-
-        Texture imgTexture = new Texture ();
-        try {
-            imgTexture.loadFromFile (Paths.get (ImageFile));
-        } catch (IOException ex) {
-            ex.printStackTrace ();
-        }
-        imgTexture.setSmooth (true);
-        img = new Sprite (imgTexture);
+        getCharInfo(bossname);
+        img = new Sprite (getCharImg(bossname));
         img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
         img.setPosition (x,y);
-        this.currentHealth = 100;
-        x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
+        //x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
+
     }
 
     /**
@@ -81,13 +79,45 @@ public class Enemy {
        imgTexture.setSmooth (true);
        return imgTexture;
    }
+   public void move(Hero hero,RenderWindow window,Game game){
+       if(alive == true) {
+           if (y > 660) {
+               y --;
+           }
+           Random random = new Random();
+           int i = random.nextInt(100) + 1;
+
+           Ray = new FloatRect(0, 0, x - hero.getBg().getBackX(), 2);
+           RectangleShape rectangles = new RectangleShape();
+           rectangles.setFillColor(Color.BLACK);
+           if (i > 5 && i < 6) {
+               y -= 60;
+           }
+
+           img.setPosition(x - hero.getBg().getBackX(), y);
+           if (hero.getCenterX() > this.x - hero.getBg().getBackX()) {
+               x++;
+           } else if (hero.getCenterX() < this.x - hero.getBg().getBackX())
+               x--;
+           if (isColliding(game.getBoxes(), img)) {
+               System.out.println("Oh no Box!");
+               y -= 20;
+           } else if (y < 660) {
+               y ++;
+           }
+
+           window.draw(rectangles);
+       }
+       else {
+           Ray = null;
+           img.setPosition(x-hero.getBg().getBackX(), y);
+       }
+   }
     public void update(Hero hero,RenderWindow window) {
-        if(hero==null){
-            System.out.println ("I am hero I am null");
-        }
-        if(hero.getBg ()==null){
-            System.out.println ("I am background I dont exist :(");
-        }
+        int k=x;
+        int l=y;
+
+
         if(this.currentHealth > 0) {
             rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
             Font fontstyle = new Font();
@@ -107,16 +137,20 @@ public class Enemy {
             if(this.getCurrentHealth() <= 25) {
                 healthbar.setColor(Color.RED);
             }
+            if(this.getCurrentHealth() <= 0) {
+                healthbar = null;
+                rect = null;
+            }
             window.draw(healthbar);
         }
        //  rectangle = new RectangleShape(x1);
        //  rectangle.setPosition (this.x,this.y);
        //  rectangle.setFillColor (Color.RED);
-        FloatRect ins = hero.getRect1 ().intersection (rect);
+       // FloatRect ins = hero.getRect1 ().intersection (rect);
            // System.out.println ("Enemy "+"height "+rect.height+"width "+rect.width+"left "+rect.left+"top "+rect.top);
            // System.out.println ("Hero "+"height "+hero.getRect1 ().height+"width "+hero.getRect1 ().width+"left "+hero.getRect1 ().left+"top "+hero.getRect1 ().top);
         if(hero.getCenterX ()>500){
-            img.setPosition (x-hero.getBg ().getBackX (),y);
+            //img.setPosition (x-hero.getBg ().getBackX (),y);
         }
 
         window.draw (img);
@@ -132,7 +166,11 @@ public class Enemy {
             this.rect = new FloatRect(0,0,0,0);
             this.image().rotate(90);
             this.setCurrentHealth(-10000);
+            alive = false;
         }
+    }
+    public void doTheShit(){
+
     }
 
     /**
@@ -153,6 +191,82 @@ public class Enemy {
         return currentHealth;
     }
 
+    public static boolean isColliding(ArrayList<Box> sprites, Sprite enemy){
+        boolean result = false;
+        for(Box sprite : sprites){
+            if(enemy.getGlobalBounds().intersection(sprite.image().getGlobalBounds())!= null){
+                result = true;
+                break;
+            }
+
+        }
+        return result;
+    }
+
+
+    public Texture getCharImg(String name) {
+        if(name == "miniGeneral") {
+            ImageFile = "./graphics/characters/miniGeneral/miniGeneral.png";
+        }
+        else if(name == "bird") {
+            ImageFile = "./graphics/characters/bird/bird.png";
+        }
+        else if(name == "bun") {
+            ImageFile = "./graphics/characters/bun/bunExploding1.png";
+        }
+        else if(name == "carrot") {
+            ImageFile = "./graphics/characters/carrot/carrot.png";
+        }
+        else if(name == "general") {
+            ImageFile = "./graphics/characters/general/general.png";
+        }
+        else if(name == "ghost") {
+            ImageFile = "./graphics/characters/ghost/ghost.png";
+        }
+        else {
+            ImageFile = "./graphics/characters/miniGeneral/miniGeneral.png";
+        }
+        Texture imgTexture = new Texture ();
+        try {
+            imgTexture.loadFromFile (Paths.get (ImageFile));
+        } catch (IOException ex) {
+            ex.printStackTrace ();
+        }
+        imgTexture.setSmooth (true);
+        return imgTexture;
+    }
+
+    public void getCharInfo(String name) {
+        if(name == "miniGeneral") {
+            currentHealth = 5;
+            //projectile no.2 and no.5
+        }
+        else if(name == "bird") {
+            currentHealth = 90;
+            //projectile no.1
+        }
+        else if(name == "bun") {
+            currentHealth = 85;
+            //projectile no.4
+        }
+        else if(name == "carrot") {
+            currentHealth = 75;
+            //projectile no.1
+        }
+        else if(name == "general") {
+            currentHealth = 200;
+            //projectile no.2 and no.5
+        }
+        else if(name == "ghost") {
+            currentHealth = 60;
+            //projectile no.5
+        }
+        //random character
+        else {
+            currentHealth = 60;
+            //projectile no.1
+        }
+    }
     /**
      * get powers
      *

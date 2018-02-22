@@ -64,6 +64,8 @@ public class Projectiles {
     public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
         player = hero;
+        this.x = x;
+        this.y = y;
         Texture imgTexture = new Texture ();
         if(type == 1) {
             try {
@@ -95,7 +97,7 @@ public class Projectiles {
         }
         if(type == 3) {
             try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/pingpongball.png"));
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bombExploding1.png"));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
@@ -107,10 +109,47 @@ public class Projectiles {
             }
             s.play();
             try {
-                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion.png"));
+                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion3.png"));
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
+        }
+        if(type == 4) {
+            try {
+                s.openFromFile(Paths.get("./audio/bomb.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
+            try {
+                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion3.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+        if(type == 5) {
+            try {
+                s.openFromFile(Paths.get("./audio/swish.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
+        }
+        if(type == 6) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/shuriken.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                s.openFromFile(Paths.get("./audio/shuriken.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
         }
         imgTexture.setSmooth (true);
         direction = directionChoice;
@@ -167,7 +206,7 @@ public class Projectiles {
                 rect = new FloatRect ((float)posx, (float)posy,50,50); // 67x34 is just img dimensions
             }
 
-            if (posx >= posx2+1600 || posx <= posx2-600) {
+            if (posx >= posx2+1100 || posx <= posx2-1100) {
                 stoped = true;
                 img = null;
                 rect = null;
@@ -202,11 +241,63 @@ public class Projectiles {
             else if (posy >= 680) {
                 stoped = true;
                 draw(window);
-                img.setPosition((float)posx, (float) posy);
+                img.setPosition((float)posx2, (float) posy);
                 rect = new FloatRect((float) posx, (float) posy, 50, 50);
             }
             // change speed in y
             vy -= 9.82 * dt; // gravity
+        }
+        // self-explosion (for bun)
+        if(typeShot == 4) {
+            if(!stoped) {
+                rect = new FloatRect((float) x, (float) y, 50, 50);
+                img.setPosition((float) x, (float) y);
+            }
+            if(boom.getElapsedTime().asSeconds() >= 3) {
+                img = new Sprite();
+                rect = new FloatRect(0,0,0,0);
+                img = null;
+                rect = null;
+                stoped = true;
+            }
+            else if(boom.getElapsedTime().asSeconds() >= 2) {
+                rect = new FloatRect((float)x-80, (float)y-120, 250,250);
+                img = new Sprite(explosion);
+                img.setPosition((float)x-80, (float)y-120);
+                window.draw(img);
+            }
+        }
+        // bat hitting
+        if(typeShot == 5) {
+            if(!stoped) {
+                rect = new FloatRect((float) x, (float) y, 90, 120); // normal char dimensions +10 each
+            }
+            if(boom.getElapsedTime().asSeconds() >= 0.5) {
+                stoped = true;
+                img = null;
+            }
+        }
+        // shuriken throw
+        if(typeShot == 6) {
+            if (!stoped) {
+                window.draw(img);
+                if (direction == true) // true shoots right
+                    posx += vy * dt;
+                if (direction == false) // false shoots left/
+                    posx -= vy * dt;
+                posy -= vx * dt;
+                time += dt;
+                img.setPosition((int) posx, (int) posy);
+                rect = new FloatRect ((float)posx, (float)posy,50,50);
+            }
+
+            if (posy >= 780) {
+                stoped = true;
+                img = null;
+                rect = null;
+            }
+            // change speed in y
+            vx -= 9.82 * dt; // gravity
         }
     }
 
@@ -220,14 +311,23 @@ public class Projectiles {
         if(ins!=null && n == 0) {
             if(typeShot == 1) {
                 img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
             }
             else if(typeShot == 2) {
                 img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
             }
             else if(typeShot == 3) {
                 enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
+            }
+            else if(typeShot == 4) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
+            }
+            else if(typeShot == 5) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
+            }
+            else if(typeShot == 6) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
             }
             n = 1;
             try {
@@ -238,6 +338,7 @@ public class Projectiles {
             }
             s2.play();
         }
+
     }
 
     /**

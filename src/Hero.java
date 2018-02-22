@@ -8,7 +8,6 @@ import org.jsfml.window.WindowStyle;
 import org.jsfml.window.event.Event;
 import org.jsfml.audio.*;
 
-import javax.xml.bind.SchemaOutputResolver;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -31,23 +30,38 @@ public class Hero {
     private int speedX = 0;  //speed
     private int speedY = 1;
     private Sprite img;
-    private String ImageFile = "./graphics/characters/player/idle.png"; //get hero graphic
+    private String ImageFile = "./graphics/characters/player/playableCharacterIdle.png"; //get hero graphic
     private Drawable obj;
     private BiConsumer<Float, Float> setPosition;
     private Background bg = new Background (0,0);
     private int backy=0;
     private Sprite background;
     private boolean collidedTop = false;
-    private int startScrolling=500;
+    private int startScrolling=800;
     private int maxHealth, currentHealth;
     private Texture imgTexture;
     private boolean collide=false;
     Music s = new Music();
     Music s2 = new Music();
-    int endX1; // first end, so after you can move full length of the screen
-    int endX2; // second end, this is the point where the very edge of the screen is
-    int yval2; // new y value (when on top of box)
-    int inity; // previous/initial y value
+    int endX1;
+    int endX2;
+
+    public static boolean isColliding(ArrayList<Enemy> sprites, Sprite spriteA){
+        boolean result = false;
+        for(Enemy sprite : sprites){
+            if(sprite.getCurrentHealth() >= 0) {
+                if (spriteA.getGlobalBounds().intersection(sprite.image().getGlobalBounds()) != null) {
+                    result = true;
+                    break;
+                }
+            }
+            else {
+                result = false;
+                break;
+            }
+        }
+        return result;
+    }
 
     /**
      *get the textures
@@ -83,10 +97,8 @@ public class Hero {
         this.endX1 = end1;
         this.endX2 = end2;
         this.ImageFile = heroImg;
-        this.yval2 = y;
-        this.inity = y;
-        rect1 = new FloatRect (100,630,80,110);
-        imgTexture = new Texture ();
+        rect1 = new FloatRect (100,640,80,110);
+         imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (heroImg));
         } catch (IOException ex) {
@@ -143,9 +155,9 @@ public class Hero {
      *
      */
     public void moveLeft() {
-        speedX = -6;
-        Texture r1 = changeImg ("./graphics/characters/player/leftWalk1.png");
-        img = new Sprite (r1);
+           speedX = -6;
+           Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking2.png");
+           img = new Sprite (r1);
     }
 
     /**
@@ -153,12 +165,12 @@ public class Hero {
      *
      */
     public void moveRight() {
-        speedX = 6;
-        Texture r1 = changeImg ("./graphics/characters/player/rightWalk1.png");
-        img = new Sprite (r1);
-        if (centerX > startScrolling)
-            bg.setBackX (bg.getBackX () + 6);
-        bg.update ();
+            speedX = 6;
+            Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking1.png");
+            img = new Sprite (r1);
+            if (centerX > startScrolling)
+                bg.setBackX (bg.getBackX () + 6);
+            bg.update ();
     }
 
     /**
@@ -167,7 +179,7 @@ public class Hero {
      */
     public void idle() {
         speedX = 0;
-        Texture i = changeImg("./graphics/characters/player/idle.png");
+        Texture i = changeImg("./graphics/characters/player/playableCharacterIdle.png");
         img = new Sprite(i);
     }
 
@@ -176,9 +188,11 @@ public class Hero {
      *
      */
     public void jump() {
-        if (jumped == false) {
-            speedY = -20;
+
+        if (jumped == false && speedY==0) {
             jumped = true;
+            speedY = -20;
+
         }
     }
 
@@ -187,11 +201,13 @@ public class Hero {
      *
      * @param window the current window
      */
-    public void update(RenderWindow window) {
+    public void update(RenderWindow window,Game game) {
+        System.out.println(jumped+"< > " + speedY);
+        System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
         bg.update (); //update X and scroll background accordingly
         updateXPosition ();
         updateYPosition ();  // Updates Y Position
-        handleJumping(); // Handles Jumping
+        handleJumping (); // Handles Jumping
 
         Font fontStyle = new Font();  //load font
         try {
@@ -212,6 +228,11 @@ public class Hero {
         if(this.getCurrentHealth() <= 25) {
             healthbar.setColor(Color.RED);
         }
+        if(isColliding(game.getEnemies(),img)){
+            currentHealth = currentHealth;
+            centerX -=40;
+            centerY-=40;
+        }
 
         window.draw(background);
         window.draw(healthbar);
@@ -222,14 +243,27 @@ public class Hero {
      *
      */
     public void updateYPosition(){
-        if (centerY + speedY >= yval2) {
-            centerY = yval2;
+        if (centerY + speedY >= 640) {
+            centerY = 640;
 
-            rect1= new FloatRect (centerX,centerY,80,110);
-        }else {
+
+        }else if(!collide){
+
             centerY += speedY;
-            rect1= new FloatRect (centerX,centerY,80,110);
+
+
         }
+
+        else if(((jumped && collide && Keyboard.isKeyPressed (Keyboard.Key.W )&& collidedTop))){
+
+            System.out.println("I started");
+            System.out.println("Current Y - " + speedY);
+            speedY=-20;
+
+            centerY +=speedY;
+
+        }
+        rect1= new FloatRect (centerX,centerY,80,110);
     }
 
     /**
@@ -270,13 +304,17 @@ public class Hero {
      *
      */
     public void handleJumping(){
-        speedY += 1;
-        if ((centerY + speedY >= yval2)) {
-            centerY = yval2;
-            speedY = 0;
-            jumped = false;
+
+        if ( !collide) {
+            speedY += 1;
+            if ((centerY + speedY >= 640  )) {
+                centerY = 640;
+                speedY = 0;
+                jumped = false;
+            }
         }
     }
+
 
     /**
      *Check for anything that collides with the hero
@@ -295,7 +333,18 @@ public class Hero {
 
         FloatRect ins = rect1.intersection (x);
 
+        if(centerY < 200) {
+            System.out.println("-- We're Flying --");
+            System.out.println(" -- Ins " + (ins != null));
+        }
+
+        if(ins != null) {
+            System.out.println("-- Coords " + rect1.top + "," +  rect1.left + "," + rect1.width + "," +rect1.height+ " --");
+            System.out.println("-- Coords " + x.top + "," +  x.left + "," + x.width + "," + x.height+ " --");
+        }
+
         if(ins!=null) {
+            speedY=0;
             this.collidingEntity2= box;
             collide=true;
             checkTopCollision (x);
@@ -304,9 +353,7 @@ public class Hero {
                 checkLeftCollision (x);
             }
         } else {
-            collide = false;
             noCollision ();
-            yval2 = inity;
         }
     }
 
@@ -315,26 +362,26 @@ public class Hero {
      *
      * @param enemy the enemy
      */
-    public void checkCollision(Enemy enemy) {
-        if (collidingEntity != null && collidingEntity != enemy) {
+    public void checkCollision(Enemy enemy){
+        if(collidingEntity!=null && collidingEntity!=enemy){
             return;
         }
-        FloatRect x = enemy.getRect();
+        FloatRect x = enemy.getRect ();
 
-        if (rect1 == null || x == null) {
+        if (rect1==null || x==null){
             return;
         }
 
-        FloatRect ins = rect1.intersection(x);
+        FloatRect ins = rect1.intersection (x);
 
-        if (ins != null) {
-            this.collidingEntity = enemy;
-            collide = true;
-            checkRightCollision(x);
-            checkLeftCollision(x);
+        if(ins!=null) {
+            this.collidingEntity= enemy;
+            collide=true;
+            checkRightCollision (x);
+            checkLeftCollision (x);
             bounce(enemy);
         } else {
-            noCollision();
+            noCollision ();
         }
     }
 
@@ -380,7 +427,7 @@ public class Hero {
         if((int)rect1.top<= (int)x.top-x.height ){
             collide=true;
             collidedTop=true;
-            yval2 = (int)x.top - (int)x.height;
+            jumped=false;
         }
     }
 
@@ -465,10 +512,6 @@ public class Hero {
      */
     public int getMaxHealth() {
         return maxHealth;
-    }
-
-    public boolean getCollision(){
-        return collide;
     }
 
     /**
