@@ -184,10 +184,10 @@ public class Game{
             }
             for(Box box : boxes) {
                 player.checkCollision(box);
-                System.out.println("-- Checked Collision --");
+                //System.out.println("-- Checked Collision --");
                 box.image().draw(window, RenderStates.DEFAULT);
                 box.update(player,window);
-                System.out.println("-- Updated Screen --");
+                //System.out.println("-- Updated Screen --");
             }
 
 
@@ -222,7 +222,7 @@ public class Game{
         boxes.clear();
         player = null;
         player = new Hero (100, 640, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(900,660,player,"bird"); //create boss from enemy class
+        boss = new Enemy(900,660,player,"carrot"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
@@ -243,7 +243,7 @@ public class Game{
         boxes.clear();
         player = null;
         player = new Hero (100, 625, "./graphics/backgrounds/S3L1.png", "./graphics/characters/player/idle.png", 4890, 1500);
-        boss = new Enemy(2000,660,player,"bun"); //create boss from enemy class
+        boss = new Enemy(2000,660,player,"general"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes

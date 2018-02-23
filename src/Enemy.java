@@ -23,6 +23,8 @@ public class Enemy {
     private int maxHealth, currentHealth, power, speedX, centerX, centerY;
     Game game;
     protected Drawable obj;
+    ArrayList<Projectiles> pro = new ArrayList<>(1);
+    Texture imgTexture = new Texture ();
 
     public FloatRect getRay() {
         return Ray;
@@ -36,6 +38,12 @@ public class Enemy {
     FloatRect circle;
     boolean alive = true;
     private String ImageFile;
+    private boolean shot = false;
+    private boolean dropped = true;
+    Enemy enemy;
+    int backx;
+    int projType;
+
     /**
      * Creates an Enemy
      *
@@ -46,6 +54,7 @@ public class Enemy {
     public Enemy(int x,int y,Hero hero,String bossname){
         this.x=x;
         this.y=y;
+        enemy = this;
         getCharInfo(bossname);
         img = new Sprite (getCharImg(bossname));
         img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
@@ -82,8 +91,9 @@ public class Enemy {
    public void move(Hero hero,RenderWindow window,Game game){
        if(alive == true) {
            if (y > 660) {
-               y --;
+               y--;
            }
+           backx = hero.getBg().getBackX();
            Random random = new Random();
            int i = random.nextInt(100) + 1;
 
@@ -100,12 +110,11 @@ public class Enemy {
            } else if (hero.getCenterX() < this.x - hero.getBg().getBackX())
                x--;
            if (isColliding(game.getBoxes(), img)) {
-               System.out.println("Oh no Box!");
+               //System.out.println("Oh no Box!");
                y -= 20;
            } else if (y < 660) {
                y ++;
            }
-
            window.draw(rectangles);
        }
        else {
@@ -117,6 +126,32 @@ public class Enemy {
         int k=x;
         int l=y;
 
+        if(alive == true) {
+            if (hero.getCenterX() < this.x - hero.getBg().getBackX() && dropped == true) {
+                dropped = false;
+                pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, false, window, projType));
+                shot = true;
+            }
+
+            if (hero.getCenterX() > this.x - hero.getBg().getBackX() && dropped == true) {
+                dropped = false;
+                pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, true, window, projType));
+                shot = true;
+            }
+
+            if (shot == true) {
+                Projectiles b = pro.get(0);
+                b.shoot(window);
+                // when projectile has finished its route, the img is set to null, so this checks for that..
+                if (b.getImg() == null) {
+                    System.out.println("dropped");
+                    dropped = true;
+                }
+                if (b.getImg() != null) {
+                    b.checkCollision(hero);
+                }
+            }
+        }
 
         if(this.currentHealth > 0) {
             rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
@@ -226,7 +261,6 @@ public class Enemy {
         else {
             ImageFile = "./graphics/characters/miniGeneral/miniGeneral.png";
         }
-        Texture imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (ImageFile));
         } catch (IOException ex) {
@@ -239,32 +273,32 @@ public class Enemy {
     public void getCharInfo(String name) {
         if(name == "miniGeneral") {
             currentHealth = 5;
-            //projectile no.2 and no.5
+            projType = 2;
         }
         else if(name == "bird") {
             currentHealth = 90;
-            //projectile no.1
+            projType = 1;
         }
         else if(name == "bun") {
             currentHealth = 85;
-            //projectile no.4
+            projType = 4;
         }
         else if(name == "carrot") {
             currentHealth = 75;
-            //projectile no.1
+            projType = 1;
         }
         else if(name == "general") {
             currentHealth = 200;
-            //projectile no.2 and no.5
+            projType = 2;
         }
         else if(name == "ghost") {
             currentHealth = 60;
-            //projectile no.5
+            projType = 5;
         }
         //random character
         else {
             currentHealth = 60;
-            //projectile no.1
+            projType = 1;
         }
     }
     /**
@@ -300,7 +334,7 @@ public class Enemy {
      * @return centerX
      */
     public int getCenterX() {
-        return centerX;
+        return x-backx;
     }
 
     /**
@@ -309,7 +343,7 @@ public class Enemy {
      * @return centerY
      */
     public int getCenterY() {
-        return centerY;
+        return y;
     }
 
     /**
@@ -382,5 +416,9 @@ public class Enemy {
      */
     public void draw(RenderWindow window){
         window.draw(obj);
+    }
+
+    public Texture getImgTexture() {
+        return imgTexture;
     }
 }

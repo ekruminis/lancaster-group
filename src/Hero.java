@@ -202,8 +202,8 @@ public class Hero {
      * @param window the current window
      */
     public void update(RenderWindow window,Game game) {
-        System.out.println(jumped+"< > " + speedY);
-        System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
+        //System.out.println(jumped+"< > " + speedY);
+        //System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
         bg.update (); //update X and scroll background accordingly
         updateXPosition ();
         updateYPosition ();  // Updates Y Position
@@ -228,9 +228,13 @@ public class Hero {
         if(this.getCurrentHealth() <= 25) {
             healthbar.setColor(Color.RED);
         }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
+        }
         if(isColliding(game.getEnemies(),img)){
             currentHealth = currentHealth;
-            centerX -=40;
+            centerX-=40;
             centerY-=40;
         }
 
@@ -439,6 +443,7 @@ public class Hero {
     public void bounce(Enemy e) {
         FloatRect x = e.getRect();
         FloatRect ins = rect1.intersection (x);
+        int push = 0;
         if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
             if(ins!=null) {
                 try {
@@ -521,5 +526,13 @@ public class Hero {
      */
     public int getCurrentHealth() {
         return currentHealth;
+    }
+
+    public void setCurrentHealth(int h) {
+        this.currentHealth = h;
+    }
+
+    public FloatRect getRect() {
+        return rect1;
     }
 }
