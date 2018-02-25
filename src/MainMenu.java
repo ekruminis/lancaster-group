@@ -33,7 +33,7 @@ class MainMenu {
         Texture texture1 = new Texture();
         try {
             //Try to load the texture from folder 'mainMenu'"
-              texture1.loadFromFile(Paths.get("./mainMenu/titleimgmid.png"));
+              texture1.loadFromFile(Paths.get("./mainMenu/mainMenu.png"));
             //Texture was loaded successfully
         } catch(IOException ex) {
             //"Houston, we have a problem."
@@ -74,20 +74,19 @@ class MainMenu {
         //Create texts with different colors, sizes and styles
         text[0] = new Text ("Play", sansRegular, 32);
         text[0].setStyle (Text.ITALIC);
-        text[0].setPosition (screenWidth/3, screenHeight-(screenHeight-200));
+        text[0].setPosition (360, 170);
         text[0].setColor (Color.RED);
 
         text[1] = new Text ("Option", sansRegular, 32);
         FloatRect text2bounds = text[1].getLocalBounds ();
         text[1].setStyle (Text.ITALIC);
-        text[1].setOrigin (text2bounds.width / 2, text2bounds.height / 2);
-        text[1].setPosition (screenWidth/3, screenHeight-(screenHeight-350));
-        text[1].setColor (Color.YELLOW);
+        text[1].setPosition (340, 270);
+        text[1].setColor (Color.BLACK);
 
         text[2] = new Text ("Exit", sansRegular, 32);
         text[2].setStyle (Text.ITALIC);
-        text[2].setPosition (screenWidth/3, screenHeight-(screenHeight-500));
-        text[2].setColor (Color.YELLOW);
+        text[2].setPosition (360, 370);
+        text[2].setColor (Color.BLACK);
 
         //Main loop
         while (window.isOpen ()){
@@ -112,7 +111,7 @@ class MainMenu {
                     }
                     s.play();
                     if (position-1 >=0) {
-                        text[position].setColor (Color.YELLOW);
+                        text[position].setColor (Color.BLACK);
                         position--;
                         text[position].setColor (Color.RED);
                         break;
@@ -127,7 +126,7 @@ class MainMenu {
                     }
                     s.play();
                     if (position+1 < noItemsInMenu) {
-                        text[position].setColor (Color.YELLOW);
+                        text[position].setColor (Color.BLACK);
                         position++;
                         text[position].setColor (Color.RED);
                         break;
@@ -145,7 +144,7 @@ class MainMenu {
                       window.close ();
                       s2.stop();
                       Game g = new Game( ); //calls game
-                      g.run(getWidth(), getHeight());
+                      g.go(getWidth(), getHeight());
                     } else if (position == 1) {
                       window.close();
                       optionMenu(); //calls optionMenu
@@ -193,7 +192,10 @@ class MainMenu {
 
     //Main function calls run function within MainMenu
     public static void main (String args[ ]) {
+
         MainMenu mm = new MainMenu ();
+
         mm.run ();
+
     }
 }

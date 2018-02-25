@@ -13,8 +13,17 @@ import java.util.Random;
  * @version  1.0 Build 1 Feb 12, 2018.
  */
 
-public class Enemy {
+public class Enemy  {
+    public int getX() {
+        return x;
+    }
+
     private int x; //position
+
+    public int getY() {
+        return y;
+    }
+
     private int y;
     FloatRect rect; //collision rectangle
     Vector2f x1; //vector
@@ -30,7 +39,7 @@ public class Enemy {
         return Ray;
     }
 
-    FloatRect Ray;
+
 
     private Sprite img;
     Random rand = new Random();
@@ -43,6 +52,18 @@ public class Enemy {
     Enemy enemy;
     int backx;
     int projType;
+    int inity;
+    int score = 1;
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    private boolean active=false;
 
     /**
      * Creates an Enemy
@@ -51,16 +72,19 @@ public class Enemy {
      * @param y y position
      * @param hero The hero
      */
+    FloatRect Ray;
     public Enemy(int x,int y,Hero hero,String bossname){
+
         this.x=x;
         this.y=y;
+        this.inity=y;
         enemy = this;
         getCharInfo(bossname);
         img = new Sprite (getCharImg(bossname));
         img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
         img.setPosition (x,y);
         //x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
-
+        rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
     }
 
     /**
@@ -88,124 +112,125 @@ public class Enemy {
        imgTexture.setSmooth (true);
        return imgTexture;
    }
+
    public void move(Hero hero,RenderWindow window,Game game){
-       if(alive == true) {
-           if (y > 660) {
-               y--;
-           }
-           backx = hero.getBg().getBackX();
-           Random random = new Random();
-           int i = random.nextInt(100) + 1;
+       if(active) {
+           if (alive == true) {
+               if (y > inity) {
+                   y--;
+               }
+               backx = hero.getBg().getBackX();
+               Random random = new Random();
+               int i = random.nextInt(100) + 1;
 
-           Ray = new FloatRect(0, 0, x - hero.getBg().getBackX(), 2);
-           RectangleShape rectangles = new RectangleShape();
-           rectangles.setFillColor(Color.BLACK);
-           if (i > 5 && i < 6) {
-               y -= 60;
-           }
+               Ray = new FloatRect(0, 0, x - hero.getBg().getBackX(), 2);
+               RectangleShape rectangles = new RectangleShape();
+               rectangles.setFillColor(Color.BLACK);
+               if (i > 5 && i < 6) {
+                   y -= 60;
+               }
 
-           img.setPosition(x - hero.getBg().getBackX(), y);
-           if (hero.getCenterX() > this.x - hero.getBg().getBackX()) {
-               x++;
-           } else if (hero.getCenterX() < this.x - hero.getBg().getBackX())
-               x--;
-           if (isColliding(game.getBoxes(), img)) {
-               //System.out.println("Oh no Box!");
-               y -= 20;
-           } else if (y < 660) {
-               y ++;
+               img.setPosition(x - hero.getBg().getBackX(), y);
+               if (hero.getCenterX() > this.x - hero.getBg().getBackX()) {
+                   x += 2;
+               } else if (hero.getCenterX() < this.x - hero.getBg().getBackX())
+                   x -= 2;
+               if (isColliding(game.getBoxes(), img)) {
+                   //System.out.println("Oh no Box!");
+                   y -= 20;
+               } else if (y < inity) {
+                   y++;
+               }
+               window.draw(rectangles);
+           } else {
+               Ray = null;
+               img.setPosition(x - hero.getBg().getBackX(), y);
            }
-           window.draw(rectangles);
-       }
-       else {
-           Ray = null;
-           img.setPosition(x-hero.getBg().getBackX(), y);
        }
    }
     public void update(Hero hero,RenderWindow window) {
-        int k=x;
-        int l=y;
-
-        if(alive == true) {
-            if (hero.getCenterX() < this.x - hero.getBg().getBackX() && dropped == true) {
-                dropped = false;
-                pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, false, window, projType));
-                shot = true;
-            }
-
-            if (hero.getCenterX() > this.x - hero.getBg().getBackX() && dropped == true) {
-                dropped = false;
-                pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, true, window, projType));
-                shot = true;
-            }
-
-            if (shot == true) {
-                Projectiles b = pro.get(0);
-                b.shoot(window);
-                // when projectile has finished its route, the img is set to null, so this checks for that..
-                if (b.getImg() == null) {
-                    System.out.println("dropped");
-                    dropped = true;
+        int k = x;
+        int l = y;
+        if (active) {
+            if (alive == true) {
+                if (hero.getCenterX() < this.x - hero.getBg().getBackX() && dropped == true) {
+                    dropped = false;
+                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, false, window, projType));
+                    shot = true;
                 }
-                if (b.getImg() != null) {
-                    b.checkCollision(hero);
+
+                if (hero.getCenterX() > this.x - hero.getBg().getBackX() && dropped == true) {
+                    dropped = false;
+                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, true, window, projType));
+                    shot = true;
+                }
+
+                if (shot == true) {
+                    Projectiles b = pro.get(0);
+                    b.shoot(window);
+                    // when projectile has finished its route, the img is set to null, so this checks for that..
+                    if (b.getImg() == null) {
+                        System.out.println("dropped");
+                        dropped = true;
+                    }
+                    if (b.getImg() != null) {
+                        b.checkCollision(hero);
+                    }
                 }
             }
-        }
 
-        if(this.currentHealth > 0) {
-            rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
-            Font fontstyle = new Font();
-            try {
-                fontstyle.loadFromFile(
-                        Paths.get(FontFile));
-            } catch (IOException ex) {
-                ex.printStackTrace( );
+            if (this.currentHealth > 0) {
+                rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
+                Font fontstyle = new Font();
+                try {
+                    fontstyle.loadFromFile(
+                            Paths.get(FontFile));
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
+                healthbar.setColor(Color.GREEN);
+                healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+                healthbar.setPosition(x - hero.getBg().getBackX(), y - 15);
+                if (this.getCurrentHealth() <= 50) {
+                    healthbar.setColor(Color.YELLOW);
+                }
+                if (this.getCurrentHealth() <= 25) {
+                    healthbar.setColor(Color.RED);
+                }
+                if (this.getCurrentHealth() <= 0) {
+                    healthbar = null;
+                    rect = null;
+                }
+                window.draw(healthbar);
             }
-            Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontstyle, 15);
-            healthbar.setColor(Color.GREEN);
-            healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
-            healthbar.setPosition(x-hero.getBg ().getBackX(), y-15);
-            if(this.getCurrentHealth() <= 50) {
-                healthbar.setColor(Color.YELLOW);
+            //  rectangle = new RectangleShape(x1);
+            //  rectangle.setPosition (this.x,this.y);
+            //  rectangle.setFillColor (Color.RED);
+            // FloatRect ins = hero.getRect1 ().intersection (rect);
+            // System.out.println ("Enemy "+"height "+rect.height+"width "+rect.width+"left "+rect.left+"top "+rect.top);
+            // System.out.println ("Hero "+"height "+hero.getRect1 ().height+"width "+hero.getRect1 ().width+"left "+hero.getRect1 ().left+"top "+hero.getRect1 ().top);
+            if (hero.getCenterX() > 500) {
+                //img.setPosition (x-hero.getBg ().getBackX (),y);
             }
-            if(this.getCurrentHealth() <= 25) {
-                healthbar.setColor(Color.RED);
-            }
-            if(this.getCurrentHealth() <= 0) {
-                healthbar = null;
-                rect = null;
-            }
-            window.draw(healthbar);
-        }
-       //  rectangle = new RectangleShape(x1);
-       //  rectangle.setPosition (this.x,this.y);
-       //  rectangle.setFillColor (Color.RED);
-       // FloatRect ins = hero.getRect1 ().intersection (rect);
-           // System.out.println ("Enemy "+"height "+rect.height+"width "+rect.width+"left "+rect.left+"top "+rect.top);
-           // System.out.println ("Hero "+"height "+hero.getRect1 ().height+"width "+hero.getRect1 ().width+"left "+hero.getRect1 ().left+"top "+hero.getRect1 ().top);
-        if(hero.getCenterX ()>500){
-            //img.setPosition (x-hero.getBg ().getBackX (),y);
-        }
 
-        window.draw (img);
+            window.draw(img);
 
-        if(this.currentHealth <= 0 && this.currentHealth > -9000) {
-            try {
-                s.openFromFile(Paths.get("./audio/dead.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
+            if (this.currentHealth <= 0 && this.currentHealth > -9000) {
+                try {
+                    s.openFromFile(Paths.get("./audio/dead.wav"));
+                } catch (IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                score = score + 50;
+                s.play();
+                this.rect = new FloatRect(0, 0, 0, 0);
+                this.image().rotate(90);
+                this.setCurrentHealth(-10000);
+                alive = false;
             }
-            s.play();
-            this.rect = new FloatRect(0,0,0,0);
-            this.image().rotate(90);
-            this.setCurrentHealth(-10000);
-            alive = false;
         }
-    }
-    public void doTheShit(){
-
     }
 
     /**
@@ -258,6 +283,9 @@ public class Enemy {
         else if(name == "ghost") {
             ImageFile = "./graphics/characters/ghost/ghost.png";
         }
+        else if(name == "trump") {
+            ImageFile = "./graphics/characters/trump/trumpIdle.png";
+        }
         else {
             ImageFile = "./graphics/characters/miniGeneral/miniGeneral.png";
         }
@@ -294,6 +322,10 @@ public class Enemy {
         else if(name == "ghost") {
             currentHealth = 60;
             projType = 5;
+        }
+        else if(name == "trump") {
+            currentHealth = 500;
+            projType = 7;
         }
         //random character
         else {
@@ -414,6 +446,14 @@ public class Enemy {
      *
      * @param window The window
      */
+
+    public int getScore() {
+        return score;
+    }
+
+    public void resetScore() {
+        score = 1;
+    }
     public void draw(RenderWindow window){
         window.draw(obj);
     }

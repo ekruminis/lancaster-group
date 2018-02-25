@@ -254,6 +254,20 @@ public class Projectiles {
             }
             s.play();
         }
+        if(type == 7) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/cannonBullet.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                s.openFromFile(Paths.get("./audio/cannon.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
+        }
         imgTexture.setSmooth (true);
         direction = directionChoice;
         img = new Sprite (imgTexture);
@@ -401,6 +415,28 @@ public class Projectiles {
             // change speed in y
             vx -= 9.82 * dt; // gravity
         }
+        // cannon shot
+        if(typeShot == 7) {
+            if (!stoped) {
+                window.draw(img);
+                if (direction == true) // true shoots right
+                    posx += vy * dt;
+                if (direction == false) // false shoots left/
+                    posx -= vy * dt;
+                posy -= vx * dt;
+                time += dt;
+                img.setPosition((int) posx, (int) posy);
+                rect = new FloatRect ((float)posx, (float)posy,50,50);
+            }
+
+            if (posy >= 780) {
+                stoped = true;
+                img = null;
+                rect = null;
+            }
+            // change speed in y
+            vx -= 9.82 * dt; // gravity
+        }
     }
 
     /**
@@ -430,6 +466,9 @@ public class Projectiles {
             }
             else if(typeShot == 6) {
                 enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
+            }
+            else if(typeShot == 7) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 20);
             }
             n = 1;
             try {
@@ -465,6 +504,9 @@ public class Projectiles {
             }
             else if(typeShot == 6) {
                 hero.setCurrentHealth(hero.getCurrentHealth() - 10);
+            }
+            else if(typeShot == 7) {
+                hero.setCurrentHealth(hero.getCurrentHealth() - 20);
             }
             n = 1;
             try {

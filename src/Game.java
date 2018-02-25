@@ -18,12 +18,15 @@ import org.jsfml.graphics.*;
  *
  * @version  1.0 Build 1 Feb 12, 2018.
  */
-public class Game{
+public class Game {
+
 
     private boolean shot = false; //declare shot as false (shot not fired)
     private String Title = "Let's Play!";
     private RenderWindow window = new RenderWindow (); //Create the window
     private Enemy boss; //declare enemy
+    private Enemy boss2;
+    private Enemy boss3;
     private Box box1; //declare box for player to jump on
     private Box box2;
     enum State {MENU, GAME}
@@ -31,6 +34,21 @@ public class Game{
     Music s2 = new Music();
     int lvl;
     boolean end = false;
+    private String FontFile  = "font/FreeSans.ttf";
+    Clock gamestart = new Clock();
+    Clock fulltime = new Clock();
+    int finalscore;
+    double enemyScore;
+    double levelScore;
+    Text stage1;
+    Text stage2;
+    Text stage3;
+    Text stage4;
+    int score1 = 0;
+    int score2 = 0;
+    int score3 = 0;
+    int score4 = 0;
+    int endScore = 0;
 
 
     State playerChoice = State.GAME; //Players choice is game
@@ -38,7 +56,7 @@ public class Game{
         return playerChoice;
     } // return the players choice
 
-    public ArrayList<Enemy> getEnemies() {
+    public  ArrayList<Enemy> getEnemies() {
         return enemies;
     }
 
@@ -48,9 +66,9 @@ public class Game{
         return boxes;
     }
 
-    ArrayList<Box> boxes = new ArrayList<>(); //create an array of boxes
+    static ArrayList<Box> boxes = new ArrayList<>(); //create an array of boxes
 
-    Hero player; //Call Hero and set co-ordinates
+    static Hero player  = new Hero (100, 640, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);; //Call Hero and set co-ordinates
 
     public Sprite[] getCharacters() {
         return characters;
@@ -77,58 +95,213 @@ public class Game{
      * @param width width of the window
      * @param height height of the window
      */
-    public void run(int width, int height) {
+    public void go(int width, int height) {
         int screenWidth = width;
         int screenHeight = height;
         window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT); //create window
-        window.setFramerateLimit (120); //set frame limit
+        window.setFramerateLimit (60); //set frame limit
 
-        //level1();
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        myBitchLevel();
-        while (true) {
+        level11();
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
 
-           /* System.gc();
-            if(player.getBg().getBackX() + player.getCenterX() >= 5800 && lvl == 1) {
-                s2.stop();
-                window.clear();
-               // level2();
-                myBitchLevel();
-            }
-            if(player.getBg().getBackX() + player.getCenterX() >= 5800 && lvl == 2) {
-                s2.stop();
-                window.clear();
-                level3();
-            }
+            while (true) {
 
-            if(player.getBg().getBackX() + player.getCenterX() >= 5800 && lvl == 3) {
-                s2.stop();
-                window.clear();
-                level4();
-            }
-            if(player.getBg().getBackX() + player.getCenterX() >= 1400 && lvl == 4) {
-                s2.stop();
-                window.clear();
-                stageEnd();
-            }*/
+                Text gameTime = new Text(("Time Elapsed: " + gamestart.getElapsedTime().asSeconds()), fontStyle, 15);
+
+                gameTime.setColor(Color.RED);
+                gameTime.setStyle(Text.BOLD | Text.UNDERLINED);
+                gameTime.setPosition(1380, 20);
+
+                Text stage1 = new Text(("Stage 1 score:" + score1), fontStyle, 15);
+
+                stage1.setColor(Color.RED);
+                stage1.setStyle(Text.BOLD | Text.UNDERLINED);
+                stage1.setPosition(20, 20);
+
+                Text stage2 = new Text(("Stage 2 score:" + score2), fontStyle, 15);
+
+                stage2.setColor(Color.RED);
+                stage2.setStyle(Text.BOLD | Text.UNDERLINED);
+                stage2.setPosition(20, 50);
+
+                Text stage3 = new Text(("Stage 3 score:" + score3), fontStyle, 15);
+
+                stage3.setColor(Color.RED);
+                stage3.setStyle(Text.BOLD | Text.UNDERLINED);
+                stage3.setPosition(20, 80);
+
+                Text stage4 = new Text(("Stage 4 score:" + score4), fontStyle, 15);
+
+                stage4.setColor(Color.RED);
+                stage4.setStyle(Text.BOLD | Text.UNDERLINED);
+                stage4.setPosition(20, 110);
+
+                Text gameScore = new Text(("Total score:" + endScore), fontStyle, 15);
+
+                gameScore.setColor(Color.RED);
+                gameScore.setStyle(Text.BOLD | Text.UNDERLINED);
+                gameScore.setPosition(20, 140);
+
+                if(player.getBg().getBackX() + player.getCenterX() >= 3700 && lvl == 11) {
+                    s2.stop();
+                    window.clear();
+                    System.out.println(getScore());
+                    score1 = getScore();
+                    endScore = score1;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level12();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 12) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score1 = getScore();
+                    endScore = score1;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level13();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 13) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score1 = getScore();
+                    endScore = score1;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level21();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 21) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    finalscore = 0;
+                    score2 = getScore();
+                    endScore = score1 + score2;
+                    window.clear();
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level22();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 22) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score2 = getScore();
+                    endScore = score1 + score2;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level23();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 23) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score2 = getScore();
+                    endScore = score1 + score2;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level31();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 31) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    finalscore = 0;
+                    score3 = getScore();
+                    endScore = score1 + score2 + score3;
+                    window.clear();
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level32();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 32) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score3 = getScore();
+                    endScore = score1 + score2 + score3;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level33();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 33) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    window.clear();
+                    score3 = getScore();
+                    endScore = score1 + score2 + score3;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level34();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 1400 && lvl == 34) {
+                    s2.stop();
+                    System.out.println(getScore());
+                    finalscore = 0;
+                    score4 = getScore();
+                    endScore = score1 + score2 + score3 + score4;
+                    window.clear();
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    level35();
+                    gamestart.restart();
+                }
+                if(player.getBg().getBackX() + player.getCenterX() >= 1900 && lvl == 35) {
+                    s2.stop();
+                    window.clear();
+                    score4 = getScore();
+                    endScore = score1 + score2 + score3 + score4;
+                    for(int i = 0;i < enemies.size(); i++) {
+                        enemies.get(i).resetScore();
+                    }
+                    stageEnd();
+                }
             // Clear the screen as white
             window.clear (Color.WHITE);
+
             // Following handles player movement
-            player.idle ();
-            player.image ().setPosition (player.getCenterX (), player.getCenterY ());
-            if (Keyboard.isKeyPressed (Keyboard.Key.A)) {
-                player.moveLeft ();
-                player.image ().setPosition (player.getCenterX (), player.getCenterY ());
-            }
-            if (Keyboard.isKeyPressed (Keyboard.Key.D)) {
-                player.moveRight ();
-                player.image ().setPosition (player.getCenterX (), player.getCenterY ());
-            }
-            if (Keyboard.isKeyPressed (Keyboard.Key.W)) {
-                player.jump ();
-                player.image ().setPosition (player.getCenterX (), player.getCenterY ());
-            }
+
+                    player.idle();
+                    player.image().setPosition(player.getCenterX(), player.getCenterY());
+                    if (Keyboard.isKeyPressed(Keyboard.Key.A)) {
+                        player.moveLeft();
+                        player.image().setPosition(player.getCenterX(), player.getCenterY());
+                    }
+                    if (Keyboard.isKeyPressed(Keyboard.Key.D)) {
+                        player.moveRight();
+                        player.image().setPosition(player.getCenterX(), player.getCenterY());
+                    }
+                    if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
+                        player.jump();
+                        player.image().setPosition(player.getCenterX(), player.getCenterY());
+                    }
+
             // 'dropped' checks if the projectile has finished its route first, before allowing to shoot again
             // 1 refers to throwing animation, 2 refers to shooting animation
             if (Keyboard.isKeyPressed (Keyboard.Key.O) && dropped == true) {
@@ -173,36 +346,50 @@ public class Game{
                 System.out.println("Y=" + player.getCenterY());
             }
 
-            player.update (window,this);
-            player.image().draw (window, RenderStates.DEFAULT);
+                player.update(window, this);
+                player.image().draw(window, RenderStates.DEFAULT);
 
-            for(Enemy bosses : enemies) {
-                player.checkCollision(bosses);
-                bosses.image().draw(window, RenderStates.DEFAULT);
-                bosses.update(player, window);
-                bosses.move(player,window,this);
-            }
-            for(Box box : boxes) {
-                player.checkCollision(box);
-                //System.out.println("-- Checked Collision --");
-                box.image().draw(window, RenderStates.DEFAULT);
-                box.update(player,window);
-                //System.out.println("-- Updated Screen --");
-            }
+                for (Enemy bosses : enemies) {
+                    //  System.out.println(bosses.getX()+ "  " +bosses.getY());
+                    if (player.getScreen().contains(bosses.getX(), 650)) {
+                        //   System.out.println("I am in");
+                        bosses.setActive(true);
+                        player.checkCollision(bosses);
+                        bosses.image().draw(window, RenderStates.DEFAULT);
+                        bosses.update(player, window);
+                        bosses.move(player, window, this);
+                    } else {
+                        bosses.setActive(false);
+                    }
+                    if(shot == true) {
+                        Projectiles b = pro.get(0);
+                        b.shoot(window);
+                        // when projectile has finished its route, the img is set to null, so this checks for that..
+                        if(b.getImg() == null) {
+                            dropped = true;
+                        }
+                        if(b.getImg() != null) {
+                            b.checkCollision(bosses);
+                        }
+                    }
+                }
 
+                for (Box box : boxes) {
+                    player.checkCollision(box);
+                    //System.out.println("-- Checked Collision --");
+                    box.image().draw(window, RenderStates.DEFAULT);
+                    box.update(player, window);
+                    //System.out.println("-- Updated Screen --");
+                }
+
+                window.draw(gameTime);
+                window.draw(stage1);
+                window.draw(stage2);
+                window.draw(stage3);
+                window.draw(stage4);
+                window.draw(gameScore);
 
             // activated when a projectile is shot, checks for collisions and whether the projectile has finished its route
-            if(shot == true) {
-                Projectiles b = pro.get(0);
-                b.shoot(window);
-                // when projectile has finished its route, the img is set to null, so this checks for that..
-                if(b.getImg() == null) {
-                    dropped = true;
-                }
-                if(b.getImg() != null) {
-                    b.checkCollision(boss);
-                }
-            }
 
             window.display ();   // Update the display with any changes
             // Handle any events
@@ -214,164 +401,277 @@ public class Game{
                 }
             }
         }
-    }
-    public void myBitchLevel(){
 
-        lvl = 5;
+    }
+    private void level11() {
+        lvl = 11;
         enemies.clear();
         boxes.clear();
         player = null;
-        player = new Hero (100, 640, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(900,660,player,"carrot"); //create boss from enemy class
+        player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
+        boss = new Enemy(1000,760,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(1800, 660, 80,90, player);
-        boxes.add(box2);
+
         try {
-            s.openFromFile(Paths.get("./audio/dead.wav"));
+            s2.openFromFile(Paths.get("./audio/b2.wav"));
         } catch(IOException ex) {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
-
-    }
-
-    private void level1() {
-        lvl = 1;
-        enemies.clear();
-        boxes.clear();
-        player = null;
-        player = new Hero (100, 625, "./graphics/backgrounds/S3L1.png", "./graphics/characters/player/idle.png", 4890, 1500);
-        boss = new Enemy(2000,660,player,"general"); //create boss from enemy class
-        enemies.add(boss); //add boss to window
-
-        //position of the boxes
-        box2 = new Box(1800, 660, 80,90, player);
-        boxes.add(box2);
-     //   try {
-            //s2.openFromFile(Paths.get("./audio/b3.wav"));
-       // } catch(IOException ex) {
-            //"Houston, we have a problem."
-        //    ex.printStackTrace();
-      //  }
-       // s2.setVolume(40);
-       // s2.play();
-    }
-
-    private void level2() {
-        lvl = 2;
-        enemies.clear();
-        boxes.clear();
-        player = null;
-        player = new Hero (100, 625, "./graphics/backgrounds/S3L2.png", "./graphics/characters/player/idle.png", 4890, 1500);
-        boss = new Enemy(1000,660,player,"bun"); //create boss from enemy class
-        enemies.add(boss); //add boss to window
-
-        //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
-        boxes.add(box2);
-        try {
-            s2.openFromFile(Paths.get("./audio/b5.wav"));
-        } catch(IOException ex) {
-            //"Houston, we have a problem."
-            ex.printStackTrace();
-        }
-        s2.setVolume(40);
+        s2.setVolume(20);
+        s2.setLoop(true);
         s2.play();
     }
 
-    private void level3() {
-        lvl = 3;
+    private void level12() {
+        lvl = 12;
         enemies.clear();
         boxes.clear();
         player = null;
-        player = new Hero (100, 625, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/idle.png", 4890, 1500);
-        boss = new Enemy(1000,660,player,"Main Boss"); //create boss from enemy class
-        Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
-        enemies.add(boss2);
+        player = new Hero (100, 690, "./graphics/backgrounds/S1L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
-        boxes.add(box2);
+        try {
+            s2.openFromFile(Paths.get("./audio/b1.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level13() {
+        lvl = 13;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 690, "./graphics/backgrounds/S1L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
         try {
             s2.openFromFile(Paths.get("./audio/b4.wav"));
         } catch(IOException ex) {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
-        s2.setVolume(40);
+        s2.setVolume(20);
+        s2.setLoop(true);
         s2.play();
     }
 
-    private void level4() {
-        lvl = 4;
+    private void level21() {
+        lvl = 21;
         enemies.clear();
         boxes.clear();
         player = null;
-        player = new Hero (100, 625, "./graphics/backgrounds/S3L4.png", "./graphics/characters/player/idle.png", 900, 1000);
-        boss = new Enemy(1000,660,player,"general"); //create boss from enemy class
+        player = new Hero (100, 680, "./graphics/backgrounds/S2L1.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
-        box2 = new Box(3300, 660, 80,90, player);
-        Box box3 = new Box(500, 660, 80, 90, player);
-        boxes.add(box2);
+
         try {
             s2.openFromFile(Paths.get("./audio/b6.ogg"));
         } catch(IOException ex) {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
-        s2.setVolume(40);
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level22() {
+        lvl = 22;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 680, "./graphics/backgrounds/S2L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b5.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level23() {
+        lvl = 23;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 680, "./graphics/backgrounds/S2L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b1.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level31() {
+        lvl = 31;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 645, "./graphics/backgrounds/S3L1.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(2000,660,player,"carrot"); //create boss from enemy class
+        Enemy boss2 = new Enemy(900,660,player,"carrot");
+        enemies.add(boss); //add boss to window
+        enemies.add(boss2);
+
+        //position of the boxes
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b3.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level32() {
+        lvl = 32;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 645, "./graphics/backgrounds/S3L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,660,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
+        ;
+        try {
+            s2.openFromFile(Paths.get("./audio/b5.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level33() {
+        lvl = 33;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 645, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
+        boss = new Enemy(1000,660,player,"Main Boss"); //create boss from enemy class
+        Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
+        enemies.add(boss2);
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b4.wav"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level34() {
+        lvl = 34;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 645, "./graphics/backgrounds/S3L4.png", "./graphics/characters/player/playableCharacterIdle.png", 1100, 1500);
+        boss = new Enemy(1000,660,player,"general"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        //position of the boxes
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b6.ogg"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
+        s2.play();
+    }
+
+    private void level35() {
+        lvl = 35;
+        enemies.clear();
+        boxes.clear();
+        player = null;
+        player = new Hero (100, 645, "./graphics/backgrounds/endlevel.png", "./graphics/characters/player/playableCharacterIdle.png", 1200, 1500);
+        boss = new Enemy(1000,620,player,"trump"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+
+        try {
+            s2.openFromFile(Paths.get("./audio/b6.ogg"));
+        } catch(IOException ex) {
+            //"Houston, we have a problem."
+            ex.printStackTrace();
+        }
+        s2.setVolume(20);
+        s2.setLoop(true);
         s2.play();
     }
 
     private void stageEnd() {
-        lvl = 5;
+        lvl = 36;
         enemies.clear();
         boxes.clear();
         window.clear();
-        window.close();
-        System.gc();
-        Texture endt = new Texture();
+        player = null;
+        player = new Hero (100, 720, "./graphics/backgrounds/endBillboard.png", "./graphics/characters/player/playableCharacterIdle.png", 0, 780);
         try {
-            endt.loadFromFile(Paths.get("./graphics/backgrounds/end.png"));
-        } catch (IOException ex) {
-            //Ouch! something went wrong
-            ex.printStackTrace();
-        }
-        Sprite img = new Sprite(endt);
-        RenderWindow window2 = new RenderWindow();
-        window2.create (new VideoMode (1600, 900), Title, WindowStyle.DEFAULT);
-        window2.setFramerateLimit(5);
-        try {
-            s2.openFromFile(Paths.get("./audio/end.wav"));
-        } catch (IOException ex) {
+            s2.openFromFile(Paths.get("./audio/b6.ogg"));
+        } catch(IOException ex) {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
+        s2.setVolume(20);
         s2.setLoop(true);
-        s2.setVolume(100);
         s2.play();
-        while(true) {
-            System.gc();
-            window2.clear();
-            window2.draw(img);
-            window2.display();
-            for (Event event : window.pollEvents ()) {
-                if (event.type == Event.Type.CLOSED) {
-                    // the user pressed the close button
-                    System.exit (0);
-                    s2.stop();
-                }
-            }
-        }
     }
 
+    public int getScore() {
+        for(int i = 0;i < enemies.size(); i++) {
+            enemyScore += enemies.get(i).getScore();
+        }
+        levelScore = ((enemyScore * 2) / (gamestart.getElapsedTime().asSeconds() * 4) * 1000);
+        finalscore += levelScore;
+        enemyScore = 0;
+        return finalscore;
+    }
     /**
      * Return the hero
      *
@@ -389,4 +689,5 @@ public class Game{
     public Enemy getEnemy(){
         return boss;
     }
+
 }

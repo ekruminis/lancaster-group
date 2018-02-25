@@ -45,6 +45,13 @@ public class Hero {
     Music s2 = new Music();
     int endX1;
     int endX2;
+    int inity;
+
+    public FloatRect getScreen() {
+        return screen;
+    }
+
+    private FloatRect screen;
 
     public static boolean isColliding(ArrayList<Enemy> sprites, Sprite spriteA){
         boolean result = false;
@@ -96,6 +103,7 @@ public class Hero {
         this.currentHealth = 100;
         this.endX1 = end1;
         this.endX2 = end2;
+        this.inity = y;
         this.ImageFile = heroImg;
         rect1 = new FloatRect (100,640,80,110);
          imgTexture = new Texture ();
@@ -202,6 +210,10 @@ public class Hero {
      * @param window the current window
      */
     public void update(RenderWindow window,Game game) {
+
+        screen = new FloatRect(rect1.left+bg.getBackX()-800,0,2000,900);
+        System.out.println(screen+ "         screen"); //redundant
+        System.out.println(rect1+"     player");
         //System.out.println(jumped+"< > " + speedY);
         //System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
         bg.update (); //update X and scroll background accordingly
@@ -247,8 +259,8 @@ public class Hero {
      *
      */
     public void updateYPosition(){
-        if (centerY + speedY >= 640) {
-            centerY = 640;
+        if (centerY + speedY >= inity) {
+            centerY = inity;
 
 
         }else if(!collide){
@@ -311,8 +323,8 @@ public class Hero {
 
         if ( !collide) {
             speedY += 1;
-            if ((centerY + speedY >= 640  )) {
-                centerY = 640;
+            if ((centerY + speedY >= inity  )) {
+                centerY = inity;
                 speedY = 0;
                 jumped = false;
             }
@@ -325,6 +337,7 @@ public class Hero {
      *
      * @param box collision box over character
      */
+
     public void checkCollision(Box box){
         if(collidingEntity2!=null && collidingEntity2!=box){
             return;
