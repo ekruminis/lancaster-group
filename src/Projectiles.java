@@ -30,7 +30,6 @@ public class Projectiles {
     private boolean stoped=false;
     private int x,y;
 
-
     /**
      * get image
      *
@@ -48,26 +47,26 @@ public class Projectiles {
     Music s = new Music();
     Music s2 = new Music();
     Music s3 = new Music();
-    Hero player;
     Enemy opponent;
+    Hero player;
     Clock boom = new Clock();
     Texture explosion = new Texture();
+    boolean dropping = true;
 
     /**
      * Creates a projectile
      *
      * @param x x position
      * @param y y position
-     * @param hero hero
      * @param directionChoice direction
      * @param window the current window
      * @param type type of projectile
      */
-    public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
+    public Projectiles(int x, int y, Hero player, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
-        player = hero;
         this.x = x;
         this.y = y;
+        this.player = player;
         Texture imgTexture = new Texture ();
         if(type == 1) {
             try {
@@ -81,107 +80,9 @@ public class Projectiles {
                 //"Houston, we have a problem."
                 ex.printStackTrace();
             }
-            s.play();
-        }
-        if(type == 2) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bullet.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/bullet.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        if(type == 3) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bombExploding1.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/bomb.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-            try {
-                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion3.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if(type == 4) {
-            try {
-                s.openFromFile(Paths.get("./audio/bomb.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-            try {
-                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion3.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if(type == 5) {
-            try {
-                s.openFromFile(Paths.get("./audio/swish.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        if(type == 6) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/shuriken.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/shuriken.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        imgTexture.setSmooth (true);
-        direction = directionChoice;
-        img = new Sprite (imgTexture);
-        img.setOrigin (Vector2f.div (new Vector2f (hero.getImgTexture ().getSize ()), 1000000));
-        posx = hero.getCenterX();
-        posy = hero.getCenterY();
-        posx2 = hero.getCenterX();
-        img.setPosition (x, y);
-
-    }
-
-    public Projectiles(int x, int y, Enemy enemy, boolean directionChoice, RenderWindow window, int type) {
-        typeShot = type;
-        opponent = enemy;
-        this.x = x;
-        this.y = y;
-        Texture imgTexture = new Texture ();
-        if(type == 1) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/pingpongball.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/rockthrow.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
+            posx = x - player.getBg().getBackX();
+            posy = y;
+            dropping = false;
             s.play();
         }
         if(type == 2) {
@@ -271,11 +172,12 @@ public class Projectiles {
         imgTexture.setSmooth (true);
         direction = directionChoice;
         img = new Sprite (imgTexture);
-        img.setOrigin (Vector2f.div (new Vector2f (enemy.getImgTexture ().getSize ()), 1000000));
-        posx = opponent.getCenterX();
-        posy = opponent.getCenterY();
-        posx2 = opponent.getCenterX();
+        //img.setOrigin (Vector2f.div (new Vector2f (hero.getImgTexture ().getSize ()), 1000000));
+        //posx = hero.getCenterX();
+        //posy = hero.getCenterY();
+        //posx2 = hero.getCenterX();
         img.setPosition (x, y);
+
     }
 
     /**
@@ -286,6 +188,7 @@ public class Projectiles {
     public void shoot(RenderWindow window) {
         // 1 -> throws Rock
         if(typeShot == 1) {
+            dropping = false;
             if (!stoped) {
                 window.draw(img);
                 if (direction == true) // true shoots right
@@ -526,5 +429,9 @@ public class Projectiles {
      */
     public void draw(RenderWindow window){
         window.draw(img);
+    }
+
+    public boolean getDropping() {
+        return dropping;
     }
 }

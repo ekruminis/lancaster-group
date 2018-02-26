@@ -51,6 +51,9 @@ public class Game {
     int score4 = 0;
     int endScore = 0;
     int n = 1;
+    Carrot carrot;
+    MrEqq eqq;
+    Trump trump;
 
     State playerChoice = State.GAME; //Players choice is game
     public State getState() {
@@ -104,7 +107,7 @@ public class Game {
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        level34();
+        level11();
         Font fontStyle = new Font();  //load font
         try {
             fontStyle.loadFromFile(Paths.get(FontFile));
@@ -323,7 +326,7 @@ public class Game {
             // 1 refers to throwing animation, 2 refers to shooting animation
             if (Keyboard.isKeyPressed (Keyboard.Key.O) && dropped == true) {
                 dropped = false;
-                pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(),player, false, window, 6));
+                pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(), player, false, window, 6));
                 shot = true;
             }
             if (Keyboard.isKeyPressed (Keyboard.Key.P) && dropped == true) {
@@ -427,6 +430,23 @@ public class Game {
                     window.draw(endTime);
                 }
 
+                if(carrot!=null){
+
+                    carrot.BasicmovementLeft(player);
+                    carrot.BasicmovementRight(player);
+
+                    if(carrot.isVisible())
+                        carrot.draw(window);
+
+                }
+                if(eqq!=null) {
+                    System.out.println("I am here");
+                    eqq.BasicmovementLeft(player);
+
+
+                    eqq.draw(window);
+                }
+
             // activated when a projectile is shot, checks for collisions and whether the projectile has finished its route
 
             window.display ();   // Update the display with any changes
@@ -447,9 +467,10 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
-        boss = new Enemy(1000,760,player,"general"); //create boss from enemy class
-        enemies.add(boss); //add boss to window
-
+        //boss = new Enemy(1000,760,player,"general"); //create boss from enemy class
+        //enemies.add(boss); //add boss to window
+        eqq = new MrEqq(700,740,player);
+        carrot = new Carrot(1300, 740, player, window);
         //position of the boxes
 
         try {

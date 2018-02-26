@@ -30,7 +30,6 @@ public class Hero {
     private int speedX = 0;  //speed
     private int speedY = 1;
     private Sprite img;
-    private String ImageFile = "./graphics/characters/player/playableCharacterIdle.png"; //get hero graphic
     private Drawable obj;
     private BiConsumer<Float, Float> setPosition;
     private Background bg = new Background (0,0);
@@ -106,17 +105,11 @@ public class Hero {
         this.endX1 = end1;
         this.endX2 = end2;
         this.inity = y;
-        this.ImageFile = heroImg;
-        rect1 = new FloatRect (100,640,80,110);
-         imgTexture = new Texture ();
-        try {
-            imgTexture.loadFromFile (Paths.get (heroImg));
-        } catch (IOException ex) {
-            ex.printStackTrace ();
-        }
-        imgTexture.setSmooth (true);
 
-        img = new Sprite (imgTexture);
+        SpriteSheet ss = new SpriteSheet();
+        img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
+        rect1 = new FloatRect (100,640,80,110);
+
         img.setPosition (x, y);
         // Store references to object and key methods
         obj = img;
