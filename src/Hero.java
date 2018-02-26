@@ -46,6 +46,8 @@ public class Hero {
     int endX1;
     int endX2;
     int inity;
+    int n;
+    boolean side = true;
 
     public FloatRect getScreen() {
         return screen;
@@ -115,7 +117,6 @@ public class Hero {
         imgTexture.setSmooth (true);
 
         img = new Sprite (imgTexture);
-        img.setOrigin (Vector2f.div (new Vector2f (imgTexture.getSize ()), 2));
         img.setPosition (x, y);
         // Store references to object and key methods
         obj = img;
@@ -162,22 +163,46 @@ public class Hero {
      * Move the Hero left
      *
      */
-    public void moveLeft() {
-           speedX = -6;
-           Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking2.png");
-           img = new Sprite (r1);
+    public void moveLeft(int n) {
+            side = false;
+           speedX = -4;
+            SpriteSheet ss = new SpriteSheet();
+            if(n >= 1 && n <= 15) {
+                img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 16 && n <= 30) {
+                img = ss.getFrame(105, 210, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 31 && n <= 45) {
+                img = ss.getFrame(210, 0, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 46 && n <= 60) {
+                img = ss.getFrame(210, 105, 100, 100, "./graphics/characters/player/movement.png");
+            }
     }
 
     /**
      *Move the Hero right
      *
      */
-    public void moveRight() {
-            speedX = 6;
-            Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking1.png");
-            img = new Sprite (r1);
+    public void moveRight(int n) {
+            side = true;
+            speedX = 4;
+            SpriteSheet ss = new SpriteSheet();
+            if(n >= 1 && n <= 15) {
+                img = ss.getFrame(0, 0, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 16 && n <= 30) {
+                img = ss.getFrame(0, 105, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 31 && n <= 45) {
+                img = ss.getFrame(105, 0, 100, 100, "./graphics/characters/player/movement.png");
+            }
+            else if(n >= 46 && n <= 60) {
+                img = ss.getFrame(105, 105, 100, 100, "./graphics/characters/player/movement.png");
+            }
             if (centerX > startScrolling)
-                bg.setBackX (bg.getBackX () + 6);
+                bg.setBackX (bg.getBackX () + 4);
             bg.update ();
     }
 
@@ -187,8 +212,13 @@ public class Hero {
      */
     public void idle() {
         speedX = 0;
-        Texture i = changeImg("./graphics/characters/player/playableCharacterIdle.png");
-        img = new Sprite(i);
+        SpriteSheet ss = new SpriteSheet();
+        if(side == true) {
+            img = ss.getFrame(0, 0, 100, 100, "./graphics/characters/player/movement.png");
+        }
+        else if(side == false) {
+            img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
+        }
     }
 
     /**
@@ -212,8 +242,8 @@ public class Hero {
     public void update(RenderWindow window,Game game) {
 
         screen = new FloatRect(rect1.left+bg.getBackX()-800,0,2000,900);
-        System.out.println(screen+ "         screen"); //redundant
-        System.out.println(rect1+"     player");
+        //System.out.println(screen+ "         screen"); //redundant
+        //System.out.println(rect1+"     player");
         //System.out.println(jumped+"< > " + speedY);
         //System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
         bg.update (); //update X and scroll background accordingly

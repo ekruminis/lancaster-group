@@ -49,7 +49,7 @@ public class Game {
     int score3 = 0;
     int score4 = 0;
     int endScore = 0;
-
+    int n = 1;
 
     State playerChoice = State.GAME; //Players choice is game
     public State getState() {
@@ -99,7 +99,7 @@ public class Game {
         int screenWidth = width;
         int screenHeight = height;
         window.create (new VideoMode (screenWidth, screenHeight), Title, WindowStyle.DEFAULT); //create window
-        window.setFramerateLimit (60); //set frame limit
+        window.setFramerateLimit (120); //set frame limit
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
@@ -290,12 +290,24 @@ public class Game {
                     player.idle();
                     player.image().setPosition(player.getCenterX(), player.getCenterY());
                     if (Keyboard.isKeyPressed(Keyboard.Key.A)) {
-                        player.moveLeft();
-                        player.image().setPosition(player.getCenterX(), player.getCenterY());
+                        if(n <= 61) {
+                            if (n == 60) {
+                                n = 0;
+                            }
+                            player.moveLeft(n);
+                            player.image().setPosition(player.getCenterX(), player.getCenterY());
+                            n++;
+                        }
                     }
                     if (Keyboard.isKeyPressed(Keyboard.Key.D)) {
-                        player.moveRight();
-                        player.image().setPosition(player.getCenterX(), player.getCenterY());
+                        if(n <= 61) {
+                            if (n == 60) {
+                                n = 0;
+                            }
+                                player.moveRight(n);
+                                player.image().setPosition(player.getCenterX(), player.getCenterY());
+                                n++;
+                        }
                     }
                     if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
                         player.jump();
@@ -342,8 +354,8 @@ public class Game {
 
             // prints current co-ordinates
             if (Keyboard.isKeyPressed (Keyboard.Key.I)) {
-                System.out.println("X=" + (player.getCenterX() + player.getBg().getBackX()));
-                System.out.println("Y=" + player.getCenterY());
+                //System.out.println("X=" + (player.getCenterX() + player.getBg().getBackX()));
+                //System.out.println("Y=" + player.getCenterY());
             }
 
                 player.update(window, this);
@@ -409,8 +421,8 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
-        boss = new Enemy(1000,760,player,"bun"); //create boss from enemy class
-        enemies.add(boss); //add boss to window
+        //boss = new Enemy(1000,760,player,"bun"); //create boss from enemy class
+        //enemies.add(boss); //add boss to window
 
         //position of the boxes
 

@@ -13,7 +13,7 @@ import java.util.Random;
  * @version  1.0 Build 1 Feb 12, 2018.
  */
 
-public class Enemy  {
+public class Enemy  extends Animator {
     public int getX() {
         return x;
     }
@@ -460,5 +460,20 @@ public class Enemy  {
 
     public Texture getImgTexture() {
         return imgTexture;
+    }
+
+    @Override
+    public void moveLeft() {
+
+    }
+
+    @Override
+    public void moveRight() {
+
+    }
+
+    @Override
+    public void jump() {
+
     }
 }
