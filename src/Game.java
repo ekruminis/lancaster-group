@@ -37,6 +37,7 @@ public class Game {
     private String FontFile  = "font/FreeSans.ttf";
     Clock gamestart = new Clock();
     Clock fulltime = new Clock();
+    float finaltime;
     int finalscore;
     double enemyScore;
     double levelScore;
@@ -103,7 +104,7 @@ public class Game {
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        level11();
+        level34();
         Font fontStyle = new Font();  //load font
         try {
             fontStyle.loadFromFile(Paths.get(FontFile));
@@ -118,6 +119,10 @@ public class Game {
                 gameTime.setColor(Color.RED);
                 gameTime.setStyle(Text.BOLD | Text.UNDERLINED);
                 gameTime.setPosition(1380, 20);
+
+                Text endTime = new Text(("Total time taken: " + finaltime), fontStyle, 40);
+                endTime.setColor(Color.GREEN);
+                endTime.setStyle(Text.BOLD | Text.UNDERLINED);
 
                 Text stage1 = new Text(("Stage 1 score:" + score1), fontStyle, 15);
 
@@ -394,12 +399,33 @@ public class Game {
                     //System.out.println("-- Updated Screen --");
                 }
 
-                window.draw(gameTime);
-                window.draw(stage1);
-                window.draw(stage2);
-                window.draw(stage3);
-                window.draw(stage4);
-                window.draw(gameScore);
+                if(lvl != 36) {
+                    window.draw(gameTime);
+                    window.draw(stage1);
+                    window.draw(stage2);
+                    window.draw(stage3);
+                    window.draw(stage4);
+                    window.draw(gameScore);
+                }
+
+                if(lvl == 36) {
+                    stage1.setPosition(140,160);
+                    stage2.setPosition(140, 190);
+                    stage3.setPosition(140, 220);
+                    stage4.setPosition(140, 250);
+                    gameScore.setCharacterSize(40);
+                    gameScore.setColor(Color.BLACK);
+                    gameScore.setPosition(330, 190);
+
+                    endTime.setPosition(140, 350);
+
+                    window.draw(stage1);
+                    window.draw(stage2);
+                    window.draw(stage3);
+                    window.draw(stage4);
+                    window.draw(gameScore);
+                    window.draw(endTime);
+                }
 
             // activated when a projectile is shot, checks for collisions and whether the projectile has finished its route
 
@@ -421,8 +447,8 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
-        //boss = new Enemy(1000,760,player,"bun"); //create boss from enemy class
-        //enemies.add(boss); //add boss to window
+        boss = new Enemy(1000,760,player,"general"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
 
         //position of the boxes
 
@@ -670,6 +696,7 @@ public class Game {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
+        finaltime = fulltime.getElapsedTime().asSeconds();
         s2.setVolume(20);
         s2.setLoop(true);
         s2.play();
