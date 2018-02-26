@@ -241,7 +241,7 @@ public class Hero {
      */
     public void update(RenderWindow window,Game game) {
 
-        screen = new FloatRect(rect1.left+bg.getBackX()-800,0,2000,900);
+        screen = new FloatRect(rect1.left+bg.getBackX()-1000,0,2000,900);
         //System.out.println(screen+ "         screen"); //redundant
         //System.out.println(rect1+"     player");
         //System.out.println(jumped+"< > " + speedY);

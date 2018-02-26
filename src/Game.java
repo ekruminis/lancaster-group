@@ -103,7 +103,7 @@ public class Game {
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        level11();
+        level12();
         Font fontStyle = new Font();  //load font
         try {
             fontStyle.loadFromFile(Paths.get(FontFile));
@@ -364,7 +364,8 @@ public class Game {
                 for (Enemy bosses : enemies) {
                     //  System.out.println(bosses.getX()+ "  " +bosses.getY());
                     if (player.getScreen().contains(bosses.getX(), 650)) {
-                        //   System.out.println("I am in");
+
+                           System.out.println("I am in");
                         bosses.setActive(true);
                         player.checkCollision(bosses);
                         bosses.image().draw(window, RenderStates.DEFAULT);
