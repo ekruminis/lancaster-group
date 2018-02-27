@@ -1,7 +1,4 @@
-import org.jsfml.graphics.FloatRect;
-import org.jsfml.graphics.RenderWindow;
-import org.jsfml.graphics.Sprite;
-import org.jsfml.graphics.Texture;
+import org.jsfml.graphics.*;
 import org.jsfml.system.Vector2f;
 
 import java.io.IOException;
@@ -14,6 +11,7 @@ public class MrEqq  extends Collision{
     private double eY;
     private boolean jumped=false;
     private Sprite eqq;
+    private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
 
     double v0 = 50; // m/s
     double angle = 60;
@@ -26,10 +24,14 @@ public class MrEqq  extends Collision{
     double posy;  // m
     double time = 0; // s
 
+    RenderWindow window;
 
-    public MrEqq(double eX,double eY,Hero hero){
+
+    public MrEqq(double eX,double eY,Hero hero, RenderWindow window){
         this.eX=eX;
         this.eY=eY;
+        this.currenthealth = 50;
+        this.window = window;
         posx=eX;
         posy=eY;
         eqq = changeImg(eqq,"graphics/characters/bird/birdAttack.png");
@@ -53,7 +55,30 @@ public class MrEqq  extends Collision{
         // change speed in y
         vy -= 1.5 * dt; // gravity
         eqq.setPosition((int)posx,(int)posy);
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
 
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition((float)eX-hero.getBg().getBackX(), (float)eY-15);
+
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
+        }
+        window.draw(healthbar);
     }
 
     @Override
@@ -67,6 +92,29 @@ public class MrEqq  extends Collision{
         // change speed in y
         vy -= 1.5 * dt; // gravity
         eqq.setPosition((int)posx,(int)posy);
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
+
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition((float)eX, (float)eY-15);
+
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
+        }
     }
 
     public void jump(Hero hero){
@@ -93,4 +141,18 @@ public class MrEqq  extends Collision{
         return x;
     }
     public void draw(RenderWindow window){window.draw(eqq);}
+
+    public FloatRect getRect() {
+        return hitbox;
+    }
+
+    int currenthealth;
+
+    public void setCurrentHealth(int currenthealth) {
+        this.currenthealth = currenthealth;
+    }
+
+    public int getCurrentHealth() {
+        return currenthealth;
+    }
 }

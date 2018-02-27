@@ -83,7 +83,7 @@ public class Enemy  extends Animator {
         enemy = this;
         getCharInfo(bossname);
         img = new Sprite (getCharImg(bossname));
-        img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
+        //img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
         img.setPosition (x,y);
         //x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
         rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);

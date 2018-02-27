@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Carrot extends  Collision {
+public class Carrot {
     private FloatRect hitbox;
     private FloatRect boom;
     private int eX;
@@ -22,13 +22,15 @@ public class Carrot extends  Collision {
     ArrayList<Projectiles> pro = new ArrayList<>(1);
     Hero player;
     boolean closeTo = false;
+    private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
 
 
     public Carrot(int eX,int eY,Hero hero, RenderWindow window2){
-        this.eX=eX-hero.getBg().getBackX();
+        this.eX=eX;
         this.eY=eY;
         this.window = window2;
         this.player = hero;
+        this.currenthealth = 50;
         carrot = changeImg(carrot,"graphics/characters/carrot/carrot.png");
         carrot.setPosition(eX,eY);
 //        carrot.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
@@ -62,12 +64,11 @@ public class Carrot extends  Collision {
                             dropped = false;
                         }
                     }
-
+                // if floatrect makes intersection, save coordinates of hero, and setCenterX(saved) and setCenterY(saved) of hero for stun
             }
         }
     }
 
-    @Override
     public void BasicmovementLeft(Hero hero) {
         if(eX-hero.getBg().getBackX() - hero.getCenterX() > 0){
             direction = false;
@@ -75,7 +76,7 @@ public class Carrot extends  Collision {
                 closeTo = true;
                 carrot.setPosition(eX - hero.getBg().getBackX(), eY);
                 eX -= 2;
-                hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
+                hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 1000, 1000);
             }
             else {
                 closeTo = false;
@@ -83,7 +84,6 @@ public class Carrot extends  Collision {
         }
     }
 
-    @Override
     public void BasicmovementRight(Hero hero) {
         if(eX-hero.getBg().getBackX() - hero.getCenterX() < 0) {
             direction = true;
@@ -91,12 +91,42 @@ public class Carrot extends  Collision {
                 closeTo = true;
                 carrot.setPosition(eX - hero.getBg().getBackX(), eY);
                 eX += 2;
-                hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
+                hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 1000, 1000);
             }
             else {
                 closeTo = false;
             }
         }
+    }
+
+    public void update(Hero player) {
+        BasicmovementLeft(player);
+        BasicmovementRight(player);
+
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
+
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition(eX- player.getBg().getBackX(), eY-15);
+
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
+        }
+        window.draw(healthbar);
     }
 
     public Sprite changeImg(Sprite x,String e) {
@@ -128,6 +158,19 @@ public class Carrot extends  Collision {
 
     public int geteY() {
         return eY;
+    }
+
+    public FloatRect getRect() {
+        return hitbox;
+    }
+
+    int currenthealth;
+    public void setCurrentHealth(int currenthealth) {
+        this.currenthealth = currenthealth;
+    }
+
+    public int getCurrentHealth() {
+        return currenthealth;
     }
 
 }

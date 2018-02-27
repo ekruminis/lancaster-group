@@ -12,6 +12,7 @@ public class Trump extends  Collision {
     private int eX;
     private int eY;
     Sprite img;
+    private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
     FloatRect rect;
     private boolean visible=true;
     private Sprite trump;
@@ -26,6 +27,7 @@ public class Trump extends  Collision {
         this.eX=eX;
         this.eY=eY;
         this.window = window2;
+        this.currenthealth = 100;
 
         SpriteSheet ss = new SpriteSheet();
         trump = ss.getFrame(0, 85, 80, 80, "./graphics/characters/orb/spritesheet.png");
@@ -61,6 +63,29 @@ public class Trump extends  Collision {
             hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
         }
 
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
+
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition(eX- hero.getBg().getBackX(), eY-15);
+
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
+        }
     }
 
     @Override
@@ -86,6 +111,30 @@ public class Trump extends  Collision {
             eX+=2;
             trump.setPosition(eX- hero.getBg().getBackX(),eY);
             hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
+        }
+
+        Font fontStyle = new Font();  //load font
+        try {
+            fontStyle.loadFromFile(Paths.get(FontFile));
+        } catch (IOException ex) {
+            ex.printStackTrace( );
+        }
+
+        Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+
+        healthbar.setColor(Color.GREEN);
+        healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
+        healthbar.setPosition(eX, eY-15);
+
+        if(this.getCurrentHealth() <= 50) {
+            healthbar.setColor(Color.YELLOW);
+        }
+        if(this.getCurrentHealth() <= 25) {
+            healthbar.setColor(Color.RED);
+        }
+        if(this.getCurrentHealth() <= 0) {
+            //gameover();
+            healthbar.setString("You're dead");
         }
     }
 
@@ -118,6 +167,19 @@ public class Trump extends  Collision {
 
     public int geteY() {
         return eY;
+    }
+
+    public FloatRect getRect() {
+        return hitbox;
+    }
+
+    int currenthealth;
+    public void setCurrentHealth(int currenthealth) {
+        this.currenthealth = currenthealth;
+    }
+
+    public int getCurrentHealth() {
+        return currenthealth;
     }
 
 }
