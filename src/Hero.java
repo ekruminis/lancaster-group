@@ -30,6 +30,7 @@ public class Hero {
     private int speedX = 0;  //speed
     private int speedY = 1;
     private Sprite img;
+    private String ImageFile = "./graphics/characters/player/playableCharacterIdle.png"; //get hero graphic
     private Drawable obj;
     private BiConsumer<Float, Float> setPosition;
     private Background bg = new Background (0,0);
@@ -37,7 +38,7 @@ public class Hero {
     private Sprite background;
     private boolean collidedTop = false;
     private int startScrolling=800;
-    private int maxHealth, currentHealth;
+    private int maxHealth, currentHealth,currentLives;
     private Texture imgTexture;
     private boolean collide=false;
     Music s = new Music();
@@ -45,8 +46,6 @@ public class Hero {
     int endX1;
     int endX2;
     int inity;
-    int n;
-    boolean side = true;
 
     public FloatRect getScreen() {
         return screen;
@@ -102,14 +101,22 @@ public class Hero {
         this.centerX = x;
         this.centerY = y;
         this.currentHealth = 100;
+        this.currentLives = 5;
         this.endX1 = end1;
         this.endX2 = end2;
         this.inity = y;
-
-        SpriteSheet ss = new SpriteSheet();
-        img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
+        this.ImageFile = heroImg;
         rect1 = new FloatRect (100,640,80,110);
+         imgTexture = new Texture ();
+        try {
+            imgTexture.loadFromFile (Paths.get (heroImg));
+        } catch (IOException ex) {
+            ex.printStackTrace ();
+        }
+        imgTexture.setSmooth (true);
 
+        img = new Sprite (imgTexture);
+        img.setOrigin (Vector2f.div (new Vector2f (imgTexture.getSize ()), 2));
         img.setPosition (x, y);
         // Store references to object and key methods
         obj = img;
@@ -156,46 +163,22 @@ public class Hero {
      * Move the Hero left
      *
      */
-    public void moveLeft(int n) {
-            side = false;
-           speedX = -4;
-            SpriteSheet ss = new SpriteSheet();
-            if(n >= 1 && n <= 15) {
-                img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 16 && n <= 30) {
-                img = ss.getFrame(105, 210, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 31 && n <= 45) {
-                img = ss.getFrame(210, 0, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 46 && n <= 60) {
-                img = ss.getFrame(210, 105, 100, 100, "./graphics/characters/player/movement.png");
-            }
+    public void moveLeft() {
+           speedX = -6;
+           Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking2.png");
+           img = new Sprite (r1);
     }
 
     /**
      *Move the Hero right
      *
      */
-    public void moveRight(int n) {
-            side = true;
-            speedX = 4;
-            SpriteSheet ss = new SpriteSheet();
-            if(n >= 1 && n <= 15) {
-                img = ss.getFrame(0, 0, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 16 && n <= 30) {
-                img = ss.getFrame(0, 105, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 31 && n <= 45) {
-                img = ss.getFrame(105, 0, 100, 100, "./graphics/characters/player/movement.png");
-            }
-            else if(n >= 46 && n <= 60) {
-                img = ss.getFrame(105, 105, 100, 100, "./graphics/characters/player/movement.png");
-            }
+    public void moveRight() {
+            speedX = 6;
+            Texture r1 = changeImg ("./graphics/characters/player/playableCharacterWalking1.png");
+            img = new Sprite (r1);
             if (centerX > startScrolling)
-                bg.setBackX (bg.getBackX () + 4);
+                bg.setBackX (bg.getBackX () + 6);
             bg.update ();
     }
 
@@ -205,13 +188,8 @@ public class Hero {
      */
     public void idle() {
         speedX = 0;
-        SpriteSheet ss = new SpriteSheet();
-        if(side == true) {
-            img = ss.getFrame(0, 0, 100, 100, "./graphics/characters/player/movement.png");
-        }
-        else if(side == false) {
-            img = ss.getFrame(0, 210, 100, 100, "./graphics/characters/player/movement.png");
-        }
+        Texture i = changeImg("./graphics/characters/player/playableCharacterIdle.png");
+        img = new Sprite(i);
     }
 
     /**
@@ -233,10 +211,10 @@ public class Hero {
      * @param window the current window
      */
     public void update(RenderWindow window,Game game) {
-        System.out.println(rect1 + "  plsyrt");
-        screen = new FloatRect(rect1.left+bg.getBackX()-1000,0,2000,900);
-        //System.out.println(screen+ "         screen"); //redundant
-        //System.out.println(rect1+"     player");
+
+        screen = new FloatRect(rect1.left+bg.getBackX()-800,0,2000,900);
+        System.out.println(screen+ "         screen"); //redundant
+        System.out.println(rect1+"     player");
         //System.out.println(jumped+"< > " + speedY);
         //System.out.println(" -- Colliding: " + collide + " -- collide Top: "+ collidedTop);
         bg.update (); //update X and scroll background accordingly
@@ -252,10 +230,14 @@ public class Hero {
         }
 
         Text healthbar = new Text(("health: " + String.valueOf(getCurrentHealth())), fontStyle, 15);
+        Text livesbar = new Text(("lives: " + String.valueOf(getCurrentLives())), fontStyle, 15);
 
+        livesbar.setColor(Color.GREEN);
+        livesbar.setStyle(Text.BOLD);
+        healthbar.setPosition(centerX, centerY-30);
         healthbar.setColor(Color.GREEN);
         healthbar.setStyle(Text.BOLD | Text.UNDERLINED);
-        healthbar.setPosition(centerX, centerY-15);
+        livesbar.setPosition(centerX, centerY-15);
 
         if(this.getCurrentHealth() <= 50) {
             healthbar.setColor(Color.YELLOW);
@@ -266,6 +248,8 @@ public class Hero {
         if(this.getCurrentHealth() <= 0) {
             //gameover();
             healthbar.setString("You're dead");
+            livesReduc();
+
         }
         if(isColliding(game.getEnemies(),img)){
             currentHealth = currentHealth;
@@ -275,6 +259,11 @@ public class Hero {
 
         window.draw(background);
         window.draw(healthbar);
+        window.draw(livesbar);
+    }
+    public void livesReduc(){
+        setCurrentLives(currentLives - 1);
+        setCurrentHealth(100);
     }
 
     /**
@@ -302,7 +291,7 @@ public class Hero {
             centerY +=speedY;
 
         }
-        rect1 = new FloatRect(centerX,centerY,80,110);
+        rect1= new FloatRect (centerX,centerY,80,110);
     }
 
     /**
@@ -420,32 +409,6 @@ public class Hero {
             checkRightCollision (x);
             checkLeftCollision (x);
             bounce(enemy);
-        } else {
-            noCollision ();
-        }
-    }
-
-    public void checkCollision(Trump enemy){
-        if(collidingEntity!=null ){
-            System.out.println("rrrrr");
-            return;
-        }
-        FloatRect x = enemy.getHitbox ();
-
-        if (rect1==null || x==null){
-            System.out.println("rrrrr");
-
-            return;
-        }
-
-        FloatRect ins = rect1.intersection (x);
-
-        if(ins!=null) {
-            System.out.println("fsdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            collide=true;
-            checkRightCollision (x);
-            checkLeftCollision (x);
-            //bounce(enemy);
         } else {
             noCollision ();
         }
@@ -589,9 +552,14 @@ public class Hero {
     public int getCurrentHealth() {
         return currentHealth;
     }
-
+    public int getCurrentLives(){
+        return currentLives;
+    }
     public void setCurrentHealth(int h) {
         this.currentHealth = h;
+    }
+    public void setCurrentLives(int l){
+        this.currentLives = l;
     }
 
     public FloatRect getRect() {

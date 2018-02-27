@@ -45,12 +45,14 @@ public class Box {
      * @param y y location
      * @param hero Hero
      */
-    public Box(int x,int y,int z, int q, Hero hero){
+    public Box(int x,int y,int z, int q, Hero hero, int skin){
         this.x=x;
         this.y=y;
         this.z=z;
         this.q=q;
-
+        if (skin == 0){
+            ImageFile="./graphics/objects/blank.png";
+        }
         Texture imgTexture = new Texture ();
         try {
             imgTexture.loadFromFile (Paths.get (ImageFile));
@@ -78,6 +80,10 @@ public class Box {
         imgTexture.setSmooth (true);
         return imgTexture;
     }
+
+
+
+
     public void update(Hero hero,RenderWindow window) {
         rect = new FloatRect (x-hero.getBg ().getBackX (),y,z,q);
         FloatRect u = hero.getRect1();

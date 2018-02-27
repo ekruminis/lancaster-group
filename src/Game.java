@@ -37,7 +37,6 @@ public class Game {
     private String FontFile  = "font/FreeSans.ttf";
     Clock gamestart = new Clock();
     Clock fulltime = new Clock();
-    float finaltime;
     int finalscore;
     double enemyScore;
     double levelScore;
@@ -50,11 +49,7 @@ public class Game {
     int score3 = 0;
     int score4 = 0;
     int endScore = 0;
-    int n = 1;
-    Carrot carrot;
-    //MrEqq eqq;
-    Trump trump;
-    Bird bird;
+
 
     State playerChoice = State.GAME; //Players choice is game
     public State getState() {
@@ -108,7 +103,7 @@ public class Game {
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        level35();
+        level11();
         Font fontStyle = new Font();  //load font
         try {
             fontStyle.loadFromFile(Paths.get(FontFile));
@@ -123,10 +118,6 @@ public class Game {
                 gameTime.setColor(Color.RED);
                 gameTime.setStyle(Text.BOLD | Text.UNDERLINED);
                 gameTime.setPosition(1380, 20);
-
-                Text endTime = new Text(("Total time taken: " + finaltime), fontStyle, 40);
-                endTime.setColor(Color.GREEN);
-                endTime.setStyle(Text.BOLD | Text.UNDERLINED);
 
                 Text stage1 = new Text(("Stage 1 score:" + score1), fontStyle, 15);
 
@@ -167,7 +158,7 @@ public class Game {
                     for(int i = 0;i < enemies.size(); i++) {
                         enemies.get(i).resetScore();
                     }
-                    level35();
+                    level12();
                     gamestart.restart();
                 }
                 if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 12) {
@@ -299,24 +290,12 @@ public class Game {
                     player.idle();
                     player.image().setPosition(player.getCenterX(), player.getCenterY());
                     if (Keyboard.isKeyPressed(Keyboard.Key.A)) {
-                        if(n <= 61) {
-                            if (n == 60) {
-                                n = 0;
-                            }
-                            player.moveLeft(n);
-                            player.image().setPosition(player.getCenterX(), player.getCenterY());
-                            n++;
-                        }
+                        player.moveLeft();
+                        player.image().setPosition(player.getCenterX(), player.getCenterY());
                     }
                     if (Keyboard.isKeyPressed(Keyboard.Key.D)) {
-                        if(n <= 61) {
-                            if (n == 60) {
-                                n = 0;
-                            }
-                                player.moveRight(n);
-                                player.image().setPosition(player.getCenterX(), player.getCenterY());
-                                n++;
-                        }
+                        player.moveRight();
+                        player.image().setPosition(player.getCenterX(), player.getCenterY());
                     }
                     if (Keyboard.isKeyPressed(Keyboard.Key.W)) {
                         player.jump();
@@ -327,7 +306,7 @@ public class Game {
             // 1 refers to throwing animation, 2 refers to shooting animation
             if (Keyboard.isKeyPressed (Keyboard.Key.O) && dropped == true) {
                 dropped = false;
-                pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(), player, false, window, 6));
+                pro.add(0, new Projectiles (getHero().getCenterX(),getHero().getCenterY(),player, false, window, 6));
                 shot = true;
             }
             if (Keyboard.isKeyPressed (Keyboard.Key.P) && dropped == true) {
@@ -363,8 +342,8 @@ public class Game {
 
             // prints current co-ordinates
             if (Keyboard.isKeyPressed (Keyboard.Key.I)) {
-                //System.out.println("X=" + (player.getCenterX() + player.getBg().getBackX()));
-                //System.out.println("Y=" + player.getCenterY());
+                System.out.println("X=" + (player.getCenterX() + player.getBg().getBackX()));
+                System.out.println("Y=" + player.getCenterY());
             }
 
                 player.update(window, this);
@@ -403,63 +382,12 @@ public class Game {
                     //System.out.println("-- Updated Screen --");
                 }
 
-                if(lvl != 36) {
-                    window.draw(gameTime);
-                    window.draw(stage1);
-                    window.draw(stage2);
-                    window.draw(stage3);
-                    window.draw(stage4);
-                    window.draw(gameScore);
-                }
-
-                if(lvl == 36) {
-                    stage1.setPosition(140,160);
-                    stage2.setPosition(140, 190);
-                    stage3.setPosition(140, 220);
-                    stage4.setPosition(140, 250);
-                    gameScore.setCharacterSize(40);
-                    gameScore.setColor(Color.BLACK);
-                    gameScore.setPosition(330, 190);
-
-                    endTime.setPosition(140, 350);
-
-                    window.draw(stage1);
-                    window.draw(stage2);
-                    window.draw(stage3);
-                    window.draw(stage4);
-                    window.draw(gameScore);
-                    window.draw(endTime);
-                }
-
-                if(carrot!=null){
-
-                    carrot.BasicmovementLeft(player);
-                    carrot.BasicmovementRight(player);
-
-                     if(carrot.isVisible())
-                      carrot.draw(window);
-
-                }
-
-                if(trump!=null) {
-
-                    trump.BasicmovementLeft(player);
-
-                    player.checkCollision(trump);
-                    if (trump.isVisible()) {
-                        trump.draw(window);
-
-                }
-
-                }
-
-                //if(eqq!=null) {
-                    //System.out.println("I am here");
-                    //eqq.BasicmovementLeft(player);
-
-
-                    //eqq.draw(window);
-                //}
+                window.draw(gameTime);
+                window.draw(stage1);
+                window.draw(stage2);
+                window.draw(stage3);
+                window.draw(stage4);
+                window.draw(gameScore);
 
             // activated when a projectile is shot, checks for collisions and whether the projectile has finished its route
 
@@ -481,11 +409,29 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
-        //boss = new Enemy(1000,760,player,"general"); //create boss from enemy class
-        //enemies.add(boss); //add boss to window
-        //eqq = new MrEqq(700,740,player);
-        //carrot = new Carrot(1300, 740, player, window);
+        boss = new Enemy(1000,760,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
+        //initialising the boxes
+        Box box2;
+        Box carBumper;
+        Box carRoof;
+        Box wall;
+        Box bushes;
+
         //position of the boxes
+
+        box2 = new Box(1587, 560, 80,90, player,1);
+        carBumper = new Box(997,683,89,90,player,0);
+        carRoof = new Box(1159,603,113,90,player,0);
+        wall = new Box(1226,486,663,90,player,0);
+        bushes = new Box(1990,597,272,90,player,0);
+
+        //adding the boxes
+        boxes.add(box2);
+        boxes.add(carBumper);
+        boxes.add(carRoof);
+        boxes.add(wall);
+        boxes.add(bushes);
 
         try {
             s2.openFromFile(Paths.get("./audio/b2.wav"));
@@ -507,7 +453,30 @@ public class Game {
         boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+
+        //initialising boxes
+        Box chairs;
+        Box flowers;
+        Box shelf;
+        Box bin1;
+        Box coffeeTable;
+
+
         //position of the boxes
+        chairs = new Box(1570,560,1020,90,player,0);
+        flowers  = new Box(2590,435,225,90,player,0);
+        shelf = new Box(2825,245,690,90,player,0);
+        bin1 = new Box(3740,575,193,90,player,0);
+        coffeeTable = new Box(4584,686,661,90,player,0);
+
+
+        //adding boxes to map
+        boxes.add(chairs);
+        boxes.add(flowers);
+        boxes.add(shelf);
+        boxes.add(bin1);
+        boxes.add(coffeeTable);
+
         try {
             s2.openFromFile(Paths.get("./audio/b1.wav"));
         } catch(IOException ex) {
@@ -528,7 +497,27 @@ public class Game {
         boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+        //initialising boxes
+        Box bin1;
+        Box stand1;
+        Box pole1;
+        Box stand2;
+        Box pole2;
+
         //position of the boxes
+        bin1 = new Box(4658,655,104,90,player,0);
+        pole1 = new Box(4678,489,36,90,player,0);
+        stand1 = new Box(4702,533,378,90,player,0);
+        pole2 = new Box(5060,493,32,90,player,0);
+        stand2 = new Box(5020,665,124,90,player,0);
+
+        //adding boxes
+        boxes.add(bin1);
+        boxes.add(pole1);
+        boxes.add(stand1);
+        boxes.add(pole2);
+        boxes.add(stand2);
+
         try {
             s2.openFromFile(Paths.get("./audio/b4.wav"));
         } catch(IOException ex) {
@@ -549,7 +538,21 @@ public class Game {
         boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+        //initialising the boxes
+        Box desk;
+        Box SofaEnd;
+        Box SofaEnd2;
+
         //position of the boxes
+        desk = new Box(2292,595,482,90,player,0);
+        SofaEnd= new Box(5438,621,314,90,player,0);
+        SofaEnd2 = new Box(5438,621,240,90,player,0);
+        //adding the boxes
+
+        boxes.add(desk);
+        boxes.add(SofaEnd);
+        boxes.add(SofaEnd2);
+
 
         try {
             s2.openFromFile(Paths.get("./audio/b6.ogg"));
@@ -571,7 +574,25 @@ public class Game {
         boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+        //initialising them boxesss
+        Box Bin1;
+        Box sponges;
+        Box Sofa1;
+        Box Sofa2;
+
         //position of the boxes
+
+        Bin1 = new Box(2272,580,150,90,player,0);
+        sponges = new Box(4088,649,802,90,player,0);
+        Sofa1 = new Box(4892,630,414,90,player,0);
+        Sofa2 = new Box(4936,517,328,90,player,0);
+
+        boxes.add(Bin1);
+        boxes.add(sponges);
+        boxes.add(Sofa1);
+        boxes.add(Sofa2);
+
+
 
         try {
             s2.openFromFile(Paths.get("./audio/b5.wav"));
@@ -593,7 +614,41 @@ public class Game {
         boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+
+        //starting the boxes
+        Box BoxA;
+        Box BoxB;
+        Box BoxC;
+        Box BoxD;
+        Box BoxE;
+        Box BoxF;
+        Box BoxG;
+        Box BoxH;
+        Box BoxI;
+
+
         //position of the boxes
+
+        BoxA = new Box(318,654,288,90,player,0);
+        BoxB = new Box(954,669,288,90,player,0);
+        BoxC = new Box(1580,672,42,90,player,0);
+        BoxD = new Box(4822,680,232,90,player,0);
+        BoxE = new Box(4870,604,130,90,player,0);
+        BoxF = new Box(5167,676,227,90,player,0);
+        BoxG = new Box(5205,574,133,90,player,0);
+        BoxH = new Box(5535,675,239,90,player,0);
+        BoxI = new Box(5576,580,150,90,player,0);
+
+        boxes.add(BoxA);
+        boxes.add(BoxB);
+        boxes.add(BoxC);
+        boxes.add(BoxD);
+        boxes.add(BoxE);
+        boxes.add(BoxF);
+        boxes.add(BoxG);
+        boxes.add(BoxH);
+        boxes.add(BoxI);
+
 
         try {
             s2.openFromFile(Paths.get("./audio/b1.wav"));
@@ -612,12 +667,42 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 645, "./graphics/backgrounds/S3L1.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        //boss = new Enemy(2000,660,player,"carrot"); //create boss from enemy class
-        //Enemy boss2 = new Enemy(900,660,player,"carrot");
+        boss = new Enemy(2000,660,player,"carrot"); //create boss from enemy class
+        Enemy boss2 = new Enemy(900,660,player,"carrot");
         enemies.add(boss); //add boss to window
         enemies.add(boss2);
 
+
+
+
+
+        //initialising the boxes
+        Box level1Sink1,level1Sink2,level1Sink3;
+        Box level1Sofa1_Arm1,level1Sofa1_Seat, level1Sofa1_Arm2;
+        Box level1Table1,level1TablePlant1;
+
         //position of the boxes
+        box2 = new Box(1800, 660, 80,90, player,1);
+        level1Sink1 = new Box(455,555, 440,85,player,0);
+        level1Sink2 = new Box(2040,555, 440,85,player,0);
+        level1Sofa1_Arm1 = new Box(4010,600, 30,85,player,0);
+        level1Sofa1_Arm2 = new Box(4330,600, 30,85,player,0);
+        level1Sofa1_Seat = new Box(4067,658, 240,85,player,0);
+        level1Sink3 = new Box(5502,566, 100,85,player,0);
+        level1Table1 = new Box (4389,649,145,85,player,0);
+        level1TablePlant1 = new Box(4435,617,47,85,player,0);
+
+        //adding the boxes
+        boxes.add(box2);boxes.add(level1Sink1);boxes.add(level1Sink2);boxes.add(level1Sink3);
+        boxes.add(level1Sofa1_Arm1);boxes.add(level1Sofa1_Arm2); boxes.add(level1Sofa1_Seat);
+        boxes.add(level1Table1); boxes.add(level1TablePlant1);
+
+
+
+
+
+
+
 
         try {
             s2.openFromFile(Paths.get("./audio/b3.wav"));
@@ -639,8 +724,26 @@ public class Game {
         boss = new Enemy(1000,660,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
+
+        //starting the boxes
+        Box BoxA;
+        Box BoxB;
+        Box BoxC;
+        Box BoxD;
+        Box BoxE;
         //position of the boxes
-        ;
+        BoxA = new Box(361,654,161,90,player,0);
+        BoxB = new Box(1400,669,161,90,player,0);
+        BoxC = new Box(2690,605,58,90,player,0);
+        BoxD = new Box(2757,657,309,90,player,0);
+        BoxE = new Box(3066,599,66,90,player,0);
+
+
+        boxes.add(BoxA);
+        boxes.add(BoxB);
+        boxes.add(BoxC);
+        boxes.add(BoxD);
+        boxes.add(BoxE);
         try {
             s2.openFromFile(Paths.get("./audio/b5.wav"));
         } catch(IOException ex) {
@@ -659,7 +762,7 @@ public class Game {
         player = null;
         player = new Hero (100, 645, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
         boss = new Enemy(1000,660,player,"Main Boss"); //create boss from enemy class
-        //Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
+        Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
         enemies.add(boss2);
         enemies.add(boss); //add boss to window
 
@@ -703,12 +806,9 @@ public class Game {
         enemies.clear();
         boxes.clear();
         player = null;
-
         player = new Hero (100, 645, "./graphics/backgrounds/endlevel.png", "./graphics/characters/player/playableCharacterIdle.png", 1200, 1500);
-        trump = new Trump(1600, 205, player, window);
-        //boss = new Enemy(1000,620,player,"trump"); //create boss from enemy class
-        //enemies.add(boss); //add boss to window
-
+        boss = new Enemy(1000,620,player,"trump"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
 
         try {
             s2.openFromFile(Paths.get("./audio/b6.ogg"));
@@ -723,7 +823,6 @@ public class Game {
 
     private void stageEnd() {
         lvl = 36;
-        trump.notVisible();
         enemies.clear();
         boxes.clear();
         window.clear();
@@ -735,7 +834,6 @@ public class Game {
             //"Houston, we have a problem."
             ex.printStackTrace();
         }
-        finaltime = fulltime.getElapsedTime().asSeconds();
         s2.setVolume(20);
         s2.setLoop(true);
         s2.play();

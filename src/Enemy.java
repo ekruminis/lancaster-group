@@ -13,7 +13,7 @@ import java.util.Random;
  * @version  1.0 Build 1 Feb 12, 2018.
  */
 
-public class Enemy  extends Animator {
+public class Enemy  {
     public int getX() {
         return x;
     }
@@ -50,7 +50,6 @@ public class Enemy  extends Animator {
     private boolean shot = false;
     private boolean dropped = true;
     Enemy enemy;
-    Hero player;
     int backx;
     int projType;
     int inity;
@@ -79,11 +78,10 @@ public class Enemy  extends Animator {
         this.x=x;
         this.y=y;
         this.inity=y;
-        this.player = hero;
         enemy = this;
         getCharInfo(bossname);
         img = new Sprite (getCharImg(bossname));
-        //img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
+        img.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
         img.setPosition (x,y);
         //x1 = (Vector2f.div(new Vector2f(imgTexture.getSize ()), 1));
         rect = new FloatRect(x - hero.getBg().getBackX(), y, 96, 96);
@@ -121,7 +119,16 @@ public class Enemy  extends Animator {
                if (y > inity) {
                    y--;
                }
+               backx = hero.getBg().getBackX();
+               Random random = new Random();
+               int i = random.nextInt(100) + 1;
 
+               Ray = new FloatRect(0, 0, x - hero.getBg().getBackX(), 2);
+               RectangleShape rectangles = new RectangleShape();
+               rectangles.setFillColor(Color.BLACK);
+               if (i > 5 && i < 6) {
+                   y -= 60;
+               }
 
                img.setPosition(x - hero.getBg().getBackX(), y);
                if (hero.getCenterX() > this.x - hero.getBg().getBackX()) {
@@ -134,13 +141,11 @@ public class Enemy  extends Animator {
                } else if (y < inity) {
                    y++;
                }
+               window.draw(rectangles);
            } else {
                Ray = null;
                img.setPosition(x - hero.getBg().getBackX(), y);
            }
-       }
-       else {
-
        }
    }
     public void update(Hero hero,RenderWindow window) {
@@ -150,13 +155,13 @@ public class Enemy  extends Animator {
             if (alive == true) {
                 if (hero.getCenterX() < this.x - hero.getBg().getBackX() && dropped == true) {
                     dropped = false;
-                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), player, false, window, projType));
+                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, false, window, projType));
                     shot = true;
                 }
 
                 if (hero.getCenterX() > this.x - hero.getBg().getBackX() && dropped == true) {
                     dropped = false;
-                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), player, true, window, projType));
+                    pro.add(0, new Projectiles(this.getCenterX(), this.getCenterY(), enemy, true, window, projType));
                     shot = true;
                 }
 
@@ -165,7 +170,7 @@ public class Enemy  extends Animator {
                     b.shoot(window);
                     // when projectile has finished its route, the img is set to null, so this checks for that..
                     if (b.getImg() == null) {
-                        //System.out.println("dropped");
+                        System.out.println("dropped");
                         dropped = true;
                     }
                     if (b.getImg() != null) {
@@ -439,7 +444,7 @@ public class Enemy  extends Animator {
     /**
      * draw the window
      *
-     *
+     * @param window The window
      */
 
     public int getScore() {
@@ -455,20 +460,5 @@ public class Enemy  extends Animator {
 
     public Texture getImgTexture() {
         return imgTexture;
-    }
-
-    @Override
-    public void moveLeft() {
-
-    }
-
-    @Override
-    public void moveRight() {
-
-    }
-
-    @Override
-    public void jump() {
-
     }
 }
