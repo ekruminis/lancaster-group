@@ -451,7 +451,7 @@ public class Hero {
             collide=true;
             checkRightCollision (x);
             checkLeftCollision (x);
-            System.out.println("IWADNASOIDNASOIDJASOIDASDJASOIDAJ");
+            bounce(b);
         } else {
             noCollision ();
         }
@@ -473,7 +473,7 @@ public class Hero {
             collide=true;
             checkRightCollision (x);
             checkLeftCollision (x);
-            System.out.println("--------------------");
+            bounce(b);
         } else {
             noCollision ();
         }
@@ -496,7 +496,7 @@ public class Hero {
             collide=true;
             checkRightCollision (x);
             checkLeftCollision (x);
-            System.out.println("IWADNASOIDNASOIDJASOIDASDJASOIDAJ");
+            bounce(b);
         } else {
             noCollision ();
         }
@@ -519,7 +519,7 @@ public class Hero {
             collide=true;
             checkRightCollision (x);
             checkLeftCollision (x);
-            System.out.println("IWADNASOIDNASOIDJASOIDASDJASOIDAJ");
+            bounce(b);
         } else {
             noCollision ();
         }
@@ -540,9 +540,11 @@ public class Hero {
 
         if(ins!=null) {
             collide=true;
+
+
             checkRightCollision (x);
             checkLeftCollision (x);
-            System.out.println("IWADNASOIDNASOIDJASOIDASDJASOIDAJ");
+            bounce(b);
         } else {
             noCollision ();
         }
@@ -629,11 +631,7 @@ public class Hero {
     public void bounce(Egg e) {
         FloatRect x = e.getRect();
         FloatRect ins = rect1.intersection (x);
-        int push = 0;
-        System.out.println(ins
 
-
-         );
         if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
             if(ins!=null) {
                 try {
@@ -643,6 +641,7 @@ public class Hero {
                     ex.printStackTrace();
                 }
                 s.play();
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
                 try {
                     s2.openFromFile(Paths.get("./audio/hit.wav"));
                 } catch(IOException ex) {
@@ -650,11 +649,120 @@ public class Hero {
                     ex.printStackTrace();
                 }
                 s2.play();
-                speedY = -20;
+                speedY= -20;
                 centerY += speedY;
             }
         }
     }
+
+    public void bounce(Carrot e) {
+        FloatRect x = e.getRect();
+        FloatRect ins = rect1.intersection (x);
+
+        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
+            if(ins!=null) {
+                try {
+                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s.play();
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                try {
+                    s2.openFromFile(Paths.get("./audio/hit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s2.play();
+                speedY= -20;
+                centerY += speedY;
+            }
+        }
+    }
+
+    public void bounce(MrEqq e) {
+        FloatRect x = e.getRect();
+        FloatRect ins = rect1.intersection (x);
+
+        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
+            if(ins!=null) {
+                try {
+                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s.play();
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                try {
+                    s2.openFromFile(Paths.get("./audio/hit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s2.play();
+                speedY= -20;
+                centerY += speedY;
+            }
+        }
+    }
+
+    public void bounce(Trump e) {
+        FloatRect x = e.getRect();
+        FloatRect ins = rect1.intersection (x);
+
+        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
+            if(ins!=null) {
+                try {
+                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s.play();
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                try {
+                    s2.openFromFile(Paths.get("./audio/hit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s2.play();
+                speedY= -20;
+                centerY += speedY;
+            }
+        }
+    }
+
+    public void bounce(TheBun e) {
+        FloatRect x = e.getRect();
+        FloatRect ins = rect1.intersection (x);
+
+        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
+            if(ins!=null) {
+                try {
+                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s.play();
+                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
+                try {
+                    s2.openFromFile(Paths.get("./audio/hit.wav"));
+                } catch(IOException ex) {
+                    //"Houston, we have a problem."
+                    ex.printStackTrace();
+                }
+                s2.play();
+                speedY= -20;
+                centerY += speedY;
+            }
+        }
+    }
+
 
     /**
      *Get the Center x of the quadrilateral

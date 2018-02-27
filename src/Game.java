@@ -420,7 +420,7 @@ public class Game {
                         //b.checkCollision(trump);
                         //b.checkCollision(eqq);
                         //b.checkCollision(bun);
-                        b.checkCollision(carrot);
+                        //b.checkCollision(carrot);
                     }
                 }
 
@@ -540,8 +540,8 @@ public class Game {
         player = null;
         player = new Hero (100, 690, "./graphics/backgrounds/S1L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
         egg = new Egg(1000,650,player, window);
-        eqq = new MrEqq(1500,650,player,window);
-        carrot = new Carrot(2000, 650, player, window);
+        //eqq = new MrEqq(1500,650,player,window);
+        //carrot = new Carrot(2000, 650, player, window);
 
         //position of the boxes
         try {

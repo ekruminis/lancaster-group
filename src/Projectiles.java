@@ -257,9 +257,9 @@ public class Projectiles {
         direction = directionChoice;
         img = new Sprite (imgTexture);
         //img.setOrigin (Vector2f.div (new Vector2f (enemy.getImgTexture ().getSize ()), 1000000));
-        posx = enemy.getCenterX()-player.getBg().getBackX();
+        System.out.println(posx);
+        posx = enemy.getCenterX();
         posy = enemy.getCenterY();
-        posx2 = enemy.getCenterX();
         img.setPosition (x, y);
     }
 

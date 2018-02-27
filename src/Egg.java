@@ -24,6 +24,7 @@ public class Egg {
     boolean closeTo = false;
     Clock timer = new Clock();
     int currenthealth;
+    Egg games;
     private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
 
     public Egg(int eX,int eY,Hero hero, RenderWindow window2){
@@ -39,7 +40,7 @@ public class Egg {
         //trump.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
 
         hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 100, 100);
-        pro.add(0, new Projectiles(eX, eY, player, direction, window, 2));
+        pro.add(0, new Projectiles(eX-player.getBg().getBackX(), eY, player, direction, window, 2));
         dropped = false;
     }
 
@@ -55,7 +56,7 @@ public class Egg {
                     if (b.getImg() == null) {
                         //System.out.println("shot by egg");
                         pro.clear();
-                        pro.add(0, new Projectiles(eX, eY, player, direction, window, 2));
+                        pro.add(0, new Projectiles(eX-player.getBg().getBackX(), eY,new Egg(eX, eY, player, window), direction, window, 2));
                         shot = false;
                         dropped = true;
                     }
@@ -174,5 +175,13 @@ public class Egg {
 
     public int getCurrentHealth() {
         return currenthealth;
+    }
+
+    public Sprite getImg() {
+        return egg;
+    }
+
+    public void setCenterX(int xx) {
+        eX = xx;
     }
 }
