@@ -26,11 +26,6 @@ public class Hero {
     private boolean jumped = false; //initiate jumped as false
     private Enemy collidingEntity;  //collisions
     private Box collidingEntity2;
-    private Egg collidingEntity3;
-    private Carrot collidingEntity4;
-    private Trump collidingEntity5;
-    private MrEqq collidingEntity6;
-    private TheBun collidingEntity7;
     private String FontFile  = "font/FreeSans.ttf";  //get font(used for health bar)
     private int speedX = 0;  //speed
     private int speedY = 1;
@@ -238,7 +233,7 @@ public class Hero {
      * @param window the current window
      */
     public void update(RenderWindow window,Game game) {
-        //System.out.println(rect1.left  + " WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+        System.out.println(rect1 + "  plsyrt");
         screen = new FloatRect(rect1.left+bg.getBackX()-1000,0,2000,900);
         //System.out.println(screen+ "         screen"); //redundant
         //System.out.println(rect1+"     player");
@@ -270,8 +265,6 @@ public class Hero {
         }
         if(this.getCurrentHealth() <= 0) {
             //gameover();
-            s.pause();
-            s2.pause();
             healthbar.setString("You're dead");
         }
         if(isColliding(game.getEnemies(),img)){
@@ -309,7 +302,7 @@ public class Hero {
             centerY +=speedY;
 
         }
-        rect1= new FloatRect (centerX,centerY,80,110);
+        rect1 = new FloatRect(centerX,centerY,80,110);
     }
 
     /**
@@ -432,119 +425,27 @@ public class Hero {
         }
     }
 
-    public void checkCollision(Egg b){
-        if(b.getRect() == null) {
+    public void checkCollision(Trump enemy){
+        if(collidingEntity!=null ){
+            System.out.println("rrrrr");
             return;
         }
-        if(collidingEntity!=null && collidingEntity3!=b) {
-            return;
-        }
-        FloatRect x = b.getRect ();
+        FloatRect x = enemy.getHitbox ();
 
         if (rect1==null || x==null){
+            System.out.println("rrrrr");
+
             return;
         }
-        //System.out.println("EGGGG= " + x);
+
         FloatRect ins = rect1.intersection (x);
 
         if(ins!=null) {
+            System.out.println("fsdaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             collide=true;
             checkRightCollision (x);
             checkLeftCollision (x);
-            bounce(b);
-        } else {
-            noCollision ();
-        }
-    }
-
-    public void checkCollision(Carrot b){
-        if(collidingEntity!=null && collidingEntity4!=b) {
-            return;
-        }
-        FloatRect x = b.getRect ();
-
-        if (rect1==null || x==null){
-            return;
-        }
-        //System.out.println("EGGGG= " + x);
-        FloatRect ins = rect1.intersection (x);
-
-        if(ins!=null) {
-            collide=true;
-            checkRightCollision (x);
-            checkLeftCollision (x);
-            bounce(b);
-        } else {
-            noCollision ();
-        }
-    }
-
-    public void checkCollision(Trump b){
-
-        if(collidingEntity!=null && collidingEntity5!=b) {
-            return;
-        }
-        FloatRect x = b.getRect ();
-
-        if (rect1==null || x==null){
-            return;
-        }
-        //System.out.println("EGGGG= " + x);
-        FloatRect ins = rect1.intersection (x);
-
-        if(ins!=null) {
-            collide=true;
-            checkRightCollision (x);
-            checkLeftCollision (x);
-            bounce(b);
-        } else {
-            noCollision ();
-        }
-    }
-
-    public void checkCollision(MrEqq b){
-
-        if(collidingEntity!=null && collidingEntity6!=b) {
-            return;
-        }
-        FloatRect x = b.getRect ();
-
-        if (rect1==null || x==null){
-            return;
-        }
-        //System.out.println("EGGGG= " + x);
-        FloatRect ins = rect1.intersection (x);
-
-        if(ins!=null) {
-            collide=true;
-            checkRightCollision (x);
-            checkLeftCollision (x);
-            bounce(b);
-        } else {
-            noCollision ();
-        }
-    }
-
-    public void checkCollision(TheBun b){
-
-        if(collidingEntity!=null && collidingEntity7!=b) {
-            return;
-        }
-        FloatRect x = b.getRect ();
-
-        if (rect1==null || x==null){
-            return;
-        }
-        //System.out.println("EGGGG= " + x);
-        FloatRect ins = rect1.intersection (x);
-
-        if(ins!=null) {
-            collide=true;
-
-
-            checkRightCollision (x);
-            checkLeftCollision (x);
-            bounce(b);
+            //bounce(enemy);
         } else {
             noCollision ();
         }
@@ -627,142 +528,6 @@ public class Hero {
             }
         }
     }
-
-    public void bounce(Egg e) {
-        FloatRect x = e.getRect();
-        FloatRect ins = rect1.intersection (x);
-
-        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
-            if(ins!=null) {
-                try {
-                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s.play();
-                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
-                try {
-                    s2.openFromFile(Paths.get("./audio/hit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s2.play();
-                speedY= -20;
-                centerY += speedY;
-            }
-        }
-    }
-
-    public void bounce(Carrot e) {
-        FloatRect x = e.getRect();
-        FloatRect ins = rect1.intersection (x);
-
-        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
-            if(ins!=null) {
-                try {
-                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s.play();
-                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
-                try {
-                    s2.openFromFile(Paths.get("./audio/hit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s2.play();
-                speedY= -20;
-                centerY += speedY;
-            }
-        }
-    }
-
-    public void bounce(MrEqq e) {
-        FloatRect x = e.getRect();
-        FloatRect ins = rect1.intersection (x);
-
-        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
-            if(ins!=null) {
-                try {
-                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s.play();
-                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
-                try {
-                    s2.openFromFile(Paths.get("./audio/hit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s2.play();
-                speedY= -20;
-                centerY += speedY;
-            }
-        }
-    }
-
-    public void bounce(Trump e) {
-        FloatRect x = e.getRect();
-        FloatRect ins = rect1.intersection (x);
-
-        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
-            if(ins!=null) {
-                try {
-                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s.play();
-                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
-                try {
-                    s2.openFromFile(Paths.get("./audio/hit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s2.play();
-                speedY= -20;
-                centerY += speedY;
-            }
-        }
-    }
-
-    public void bounce(TheBun e) {
-        FloatRect x = e.getRect();
-        FloatRect ins = rect1.intersection (x);
-
-        if(((int)getCenterY() <= (int)e.getRect().top-(int)e.getRect().height) && ((int)getCenterX()+((int)e.getRect().width/2) <= (int)e.getRect().left+(int)e.getRect().width ) && ((int)getCenterX()+((int)e.getRect().width/2) >= (int)e.getRect().left) ){
-            if(ins!=null) {
-                try {
-                    s.openFromFile(Paths.get("./audio/jumphit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s.play();
-                e.setCurrentHealth(e.getCurrentHealth()-5); // 5 is dmg dealt
-                try {
-                    s2.openFromFile(Paths.get("./audio/hit.wav"));
-                } catch(IOException ex) {
-                    //"Houston, we have a problem."
-                    ex.printStackTrace();
-                }
-                s2.play();
-                speedY= -20;
-                centerY += speedY;
-            }
-        }
-    }
-
 
     /**
      *Get the Center x of the quadrilateral

@@ -30,7 +30,6 @@ public class Projectiles {
     private boolean stoped=false;
     private int x,y;
 
-
     /**
      * get image
      *
@@ -48,26 +47,26 @@ public class Projectiles {
     Music s = new Music();
     Music s2 = new Music();
     Music s3 = new Music();
-    Hero player;
     Enemy opponent;
+    Hero player;
     Clock boom = new Clock();
     Texture explosion = new Texture();
+    boolean dropping = true;
 
     /**
      * Creates a projectile
      *
      * @param x x position
      * @param y y position
-     * @param hero hero
      * @param directionChoice direction
      * @param window the current window
      * @param type type of projectile
      */
-    public Projectiles(int x, int y, Hero hero, boolean directionChoice, RenderWindow window, int type) {
+    public Projectiles(int x, int y, Hero player, boolean directionChoice, RenderWindow window, int type) {
         typeShot = type;
-        player = hero;
         this.x = x;
         this.y = y;
+        this.player = player;
         Texture imgTexture = new Texture ();
         if(type == 1) {
             try {
@@ -81,106 +80,9 @@ public class Projectiles {
                 //"Houston, we have a problem."
                 ex.printStackTrace();
             }
-            s.play();
-        }
-        if(type == 2) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bullet.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/bullet.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        if(type == 3) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/bombExploding1.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/bomb.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-            try {
-                explosion.loadFromFile(Paths.get("./graphics/projectiles/explosion3.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if(type == 4) {
-            try {
-                s.openFromFile(Paths.get("./audio/bomb.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-            try {
-                explosion.loadFromFile(Paths.get("./graphics/projectiles/bomb/explosion3.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
-        if(type == 5) {
-            try {
-                s.openFromFile(Paths.get("./audio/swish.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        if(type == 6) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/shuriken.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/shuriken.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s.play();
-        }
-        imgTexture.setSmooth (true);
-        direction = directionChoice;
-        img = new Sprite (imgTexture);
-        //  img.setOrigin (Vector2f.div (new Vector2f (hero.getImgTexture ().getSize ()), 1000000));
-        posx = hero.getCenterX();
-        posy = hero.getCenterY();
-        posx2 = hero.getCenterX();
-        img.setPosition (x, y);
-
-    }
-
-    public Projectiles(int x, int y, Egg enemy, boolean directionChoice, RenderWindow window, int type) {
-        typeShot = type;
-        this.x = x;
-        this.y = y;
-        Texture imgTexture = new Texture ();
-        if(type == 1) {
-            try {
-                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/pingpongball.png"));
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-            try {
-                s.openFromFile(Paths.get("./audio/rockthrow.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
+            posx = x - player.getBg().getBackX();
+            posy = y;
+            dropping = false;
             s.play();
         }
         if(type == 2) {
@@ -253,14 +155,29 @@ public class Projectiles {
             }
             s.play();
         }
+        if(type == 7) {
+            try {
+                imgTexture.loadFromFile(Paths.get("./graphics/projectiles/cannonBullet.png"));
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            try {
+                s.openFromFile(Paths.get("./audio/cannon.wav"));
+            } catch(IOException ex) {
+                //"Houston, we have a problem."
+                ex.printStackTrace();
+            }
+            s.play();
+        }
         imgTexture.setSmooth (true);
         direction = directionChoice;
         img = new Sprite (imgTexture);
-        //img.setOrigin (Vector2f.div (new Vector2f (enemy.getImgTexture ().getSize ()), 1000000));
-        System.out.println(posx);
-        posx = enemy.getCenterX();
-        posy = enemy.getCenterY();
+        //img.setOrigin (Vector2f.div (new Vector2f (hero.getImgTexture ().getSize ()), 1000000));
+        //posx = hero.getCenterX();
+        //posy = hero.getCenterY();
+        //posx2 = hero.getCenterX();
         img.setPosition (x, y);
+
     }
 
     /**
@@ -271,6 +188,7 @@ public class Projectiles {
     public void shoot(RenderWindow window) {
         // 1 -> throws Rock
         if(typeShot == 1) {
+            dropping = false;
             if (!stoped) {
                 window.draw(img);
                 if (direction == true) // true shoots right
@@ -295,14 +213,14 @@ public class Projectiles {
         if(typeShot == 2) {
             if (!stoped) {
                 window.draw(img);
-                // true shoots right
+				// true shoots right
                 if (direction == true) {
                     posx += 18;
-                }
-                // false shoots left
+				}
+				// false shoots left
                 if (direction == false) {
                     posx -= 18;
-                }
+				}
                 img.setPosition((int) posx, (int) posy);
                 rect = new FloatRect ((float)posx, (float)posy,50,50); // 67x34 is just img dimensions
             }
@@ -400,6 +318,28 @@ public class Projectiles {
             // change speed in y
             vx -= 9.82 * dt; // gravity
         }
+        // cannon shot
+        if(typeShot == 7) {
+            if (!stoped) {
+                window.draw(img);
+                if (direction == true) // true shoots right
+                    posx += vy * dt;
+                if (direction == false) // false shoots left/
+                    posx -= vy * dt;
+                posy -= vx * dt;
+                time += dt;
+                img.setPosition((int) posx, (int) posy);
+                rect = new FloatRect ((float)posx, (float)posy,50,50);
+            }
+
+            if (posy >= 780) {
+                stoped = true;
+                img = null;
+                rect = null;
+            }
+            // change speed in y
+            vx -= 9.82 * dt; // gravity
+        }
     }
 
     /**
@@ -430,73 +370,8 @@ public class Projectiles {
             else if(typeShot == 6) {
                 enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
             }
-            n = 1;
-            try {
-                s2.openFromFile(Paths.get("./audio/hit.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s2.play();
-        }
-
-    }
-
-    public void checkCollision(Egg enemy){
-        FloatRect ins = enemy.getRect().intersection (rect);
-        if(ins!=null && n == 0) {
-            if(typeShot == 1) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            else if(typeShot == 2) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
-            }
-            else if(typeShot == 3) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
-            }
-            else if(typeShot == 4) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
-            }
-            else if(typeShot == 5) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
-            }
-            else if(typeShot == 6) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            n = 1;
-            try {
-                s2.openFromFile(Paths.get("./audio/hit.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s2.play();
-        }
-    }
-    public void checkCollision(Trump enemy){
-        FloatRect ins = enemy.getRect().intersection (rect);
-        if(ins!=null && n == 0) {
-            if(typeShot == 1) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            else if(typeShot == 2) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
-            }
-            else if(typeShot == 3) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
-            }
-            else if(typeShot == 4) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
-            }
-            else if(typeShot == 5) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
-            }
-            else if(typeShot == 6) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
+            else if(typeShot == 7) {
+                enemy.setCurrentHealth(enemy.getCurrentHealth() - 20);
             }
             n = 1;
             try {
@@ -509,109 +384,6 @@ public class Projectiles {
         }
 
     }
-    public void checkCollision(TheBun enemy){
-        FloatRect ins = enemy.getRect().intersection (rect);
-        if(ins!=null && n == 0) {
-            if(typeShot == 1) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            else if(typeShot == 2) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
-            }
-            else if(typeShot == 3) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
-            }
-            else if(typeShot == 4) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
-            }
-            else if(typeShot == 5) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
-            }
-            else if(typeShot == 6) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            n = 1;
-            try {
-                s2.openFromFile(Paths.get("./audio/hit.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s2.play();
-        }
-
-    }
-    public void checkCollision(MrEqq enemy){
-        FloatRect ins = enemy.getRect().intersection (rect);
-        if(ins!=null && n == 0) {
-            if(typeShot == 1) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            else if(typeShot == 2) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
-            }
-            else if(typeShot == 3) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
-            }
-            else if(typeShot == 4) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
-            }
-            else if(typeShot == 5) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
-            }
-            else if(typeShot == 6) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            n = 1;
-            try {
-                s2.openFromFile(Paths.get("./audio/hit.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s2.play();
-        }
-
-    }
-    public void checkCollision(Carrot enemy){
-        FloatRect ins = enemy.getRect().intersection (rect);
-        if(ins!=null && n == 0) {
-            if(typeShot == 1) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            else if(typeShot == 2) {
-                img = new Sprite();
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 15);
-            }
-            else if(typeShot == 3) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 25);
-            }
-            else if(typeShot == 4) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 35);
-            }
-            else if(typeShot == 5) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 5);
-            }
-            else if(typeShot == 6) {
-                enemy.setCurrentHealth(enemy.getCurrentHealth() - 10);
-            }
-            n = 1;
-            try {
-                s2.openFromFile(Paths.get("./audio/hit.wav"));
-            } catch(IOException ex) {
-                //"Houston, we have a problem."
-                ex.printStackTrace();
-            }
-            s2.play();
-        }
-
-    }
-
 
     public void checkCollision(Hero hero){
         FloatRect ins = hero.getRect().intersection (rect);
@@ -636,6 +408,9 @@ public class Projectiles {
             else if(typeShot == 6) {
                 hero.setCurrentHealth(hero.getCurrentHealth() - 10);
             }
+            else if(typeShot == 7) {
+                hero.setCurrentHealth(hero.getCurrentHealth() - 20);
+            }
             n = 1;
             try {
                 s2.openFromFile(Paths.get("./audio/hit.wav"));
@@ -654,5 +429,9 @@ public class Projectiles {
      */
     public void draw(RenderWindow window){
         window.draw(img);
+    }
+
+    public boolean getDropping() {
+        return dropping;
     }
 }

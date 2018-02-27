@@ -32,7 +32,6 @@ public class Game {
     enum State {MENU, GAME}
     Music s = new Music();
     Music s2 = new Music();
-    Music s3 = new Music();
     int lvl;
     boolean end = false;
     private String FontFile  = "font/FreeSans.ttf";
@@ -53,10 +52,9 @@ public class Game {
     int endScore = 0;
     int n = 1;
     Carrot carrot;
-    MrEqq eqq;
+    //MrEqq eqq;
     Trump trump;
-    Egg egg;
-    TheBun bun;
+    Bird bird;
 
     State playerChoice = State.GAME; //Players choice is game
     public State getState() {
@@ -110,7 +108,7 @@ public class Game {
 
         ArrayList<Projectiles> pro = new ArrayList<>(1);
         boolean dropped = true;
-        level12();
+        level35();
         Font fontStyle = new Font();  //load font
         try {
             fontStyle.loadFromFile(Paths.get(FontFile));
@@ -169,7 +167,7 @@ public class Game {
                     for(int i = 0;i < enemies.size(); i++) {
                         enemies.get(i).resetScore();
                     }
-                    level12();
+                    level35();
                     gamestart.restart();
                 }
                 if(player.getBg().getBackX() + player.getCenterX() >= 5500 && lvl == 12) {
@@ -372,6 +370,31 @@ public class Game {
                 player.update(window, this);
                 player.image().draw(window, RenderStates.DEFAULT);
 
+                for (Enemy bosses : enemies) {
+                    //  System.out.println(bosses.getX()+ "  " +bosses.getY());
+                    if (player.getScreen().contains(bosses.getX(), 650)) {
+                        //   System.out.println("I am in");
+                        bosses.setActive(true);
+                        player.checkCollision(bosses);
+                        bosses.image().draw(window, RenderStates.DEFAULT);
+                        bosses.update(player, window);
+                        bosses.move(player, window, this);
+                    } else {
+                        bosses.setActive(false);
+                    }
+                    if(shot == true) {
+                        Projectiles b = pro.get(0);
+                        b.shoot(window);
+                        // when projectile has finished its route, the img is set to null, so this checks for that..
+                        if(b.getImg() == null) {
+                            dropped = true;
+                        }
+                        if(b.getImg() != null) {
+                            b.checkCollision(bosses);
+                        }
+                    }
+                }
+
                 for (Box box : boxes) {
                     player.checkCollision(box);
                     //System.out.println("-- Checked Collision --");
@@ -408,93 +431,35 @@ public class Game {
                     window.draw(endTime);
                 }
 
-                if(shot == true) {
-                    Projectiles b = pro.get(0);
-                    b.shoot(window);
-                    // when projectile has finished its route, the img is set to null, so this checks for that..
-                    if(b.getImg() == null) {
-                        dropped = true;
-                    }
-                    if(b.getImg() != null) {
-                        b.checkCollision(egg);
-                        //b.checkCollision(trump);
-                        //b.checkCollision(eqq);
-                        //b.checkCollision(bun);
-                        //b.checkCollision(carrot);
-                    }
-                }
-
                 if(carrot!=null){
 
-                    carrot.update(player);
-                    carrot.stun(player, window);
-                    if(carrot.isVisible()) {
-                        player.checkCollision(carrot);
-                        carrot.draw(window);
-                    }
+                    carrot.BasicmovementLeft(player);
+                    carrot.BasicmovementRight(player);
 
-                    player.checkCollision(carrot);
+                     if(carrot.isVisible())
+                      carrot.draw(window);
+
                 }
-                if(egg!=null) {
+
+                if(trump!=null) {
+
+                    trump.BasicmovementLeft(player);
+
+                    player.checkCollision(trump);
+                    if (trump.isVisible()) {
+                        trump.draw(window);
+
+                }
+
+                }
+
+                //if(eqq!=null) {
                     //System.out.println("I am here");
-                    egg.update(player);
-                    egg.shoot(player, window);
-                    player.checkCollision(egg);
-                    egg.draw(window);
-                }
+                    //eqq.BasicmovementLeft(player);
 
 
-
-                if(player.getCurrentHealth() <= 0) {
-                    Texture t = new Texture();
-                    try {
-                        t.loadFromFile(Paths.get("./graphics/backgrounds/death.png"));
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                    Sprite death = new Sprite(t);
-                    s.pause();
-                    s2.pause();
-                    window.clear();
-                    death.setPosition(400,300);
-                    window.draw(death);
-                    if (Keyboard.isKeyPressed (Keyboard.Key.RETURN)) {
-                        if( lvl == 11) {
-                            level11();
-                        }
-                        if( lvl == 12) {
-                            level12();
-                        }
-                        if( lvl == 13) {
-                            level13();
-                        }
-                        if( lvl == 21) {
-                            level21();
-                        }
-                        if( lvl == 22) {
-                            level22();
-                        }
-                        if( lvl == 23) {
-                            level23();
-                        }
-                        if( lvl == 31) {
-                            level31();
-                        }
-                        if( lvl == 32) {
-                            level32();
-                        }
-                        if( lvl == 33) {
-                            level33();
-                        }
-                        if( lvl == 34) {
-                            level34();
-                        }
-                        if( lvl == 35) {
-                            level35();
-                        }
-
-                    }
-                }
+                    //eqq.draw(window);
+                //}
 
             // activated when a projectile is shot, checks for collisions and whether the projectile has finished its route
 
@@ -518,7 +483,7 @@ public class Game {
         player = new Hero (100, 740, "./graphics/backgrounds/S1L1.png", "./graphics/characters/player/playableCharacterIdle.png", 3000, 1500);
         //boss = new Enemy(1000,760,player,"general"); //create boss from enemy class
         //enemies.add(boss); //add boss to window
-        //egg = new Egg(700,740,player, window);
+        //eqq = new MrEqq(700,740,player);
         //carrot = new Carrot(1300, 740, player, window);
         //position of the boxes
 
@@ -539,9 +504,8 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 690, "./graphics/backgrounds/S1L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        egg = new Egg(1000,650,player, window);
-        //eqq = new MrEqq(1500,650,player,window);
-        //carrot = new Carrot(2000, 650, player, window);
+        boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
+        enemies.add(boss); //add boss to window
 
         //position of the boxes
         try {
@@ -561,7 +525,7 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 690, "./graphics/backgrounds/S1L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(1000,720,player,"carrot"); //create boss from enemy class
+        boss = new Enemy(1000,720,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
@@ -582,7 +546,7 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 680, "./graphics/backgrounds/S2L1.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(1000,710,player,"carrot"); //create boss from enemy class
+        boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
@@ -604,7 +568,7 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 680, "./graphics/backgrounds/S2L2.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(1000,710,player,"carrot"); //create boss from enemy class
+        boss = new Enemy(1000,710,player,"bun"); //create boss from enemy class
         enemies.add(boss); //add boss to window
 
         //position of the boxes
@@ -648,8 +612,8 @@ public class Game {
         boxes.clear();
         player = null;
         player = new Hero (100, 645, "./graphics/backgrounds/S3L1.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
-        boss = new Enemy(2000,660,player,"carrot"); //create boss from enemy class
-        Enemy boss2 = new Enemy(900,660,player,"carrot");
+        //boss = new Enemy(2000,660,player,"carrot"); //create boss from enemy class
+        //Enemy boss2 = new Enemy(900,660,player,"carrot");
         enemies.add(boss); //add boss to window
         enemies.add(boss2);
 
@@ -695,7 +659,7 @@ public class Game {
         player = null;
         player = new Hero (100, 645, "./graphics/backgrounds/S3L3.png", "./graphics/characters/player/playableCharacterIdle.png", 4890, 1500);
         boss = new Enemy(1000,660,player,"Main Boss"); //create boss from enemy class
-        Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
+        //Enemy boss2 = new Enemy(1300,660,player,"carrot"); //create boss from enemy class
         enemies.add(boss2);
         enemies.add(boss); //add boss to window
 
@@ -739,9 +703,12 @@ public class Game {
         enemies.clear();
         boxes.clear();
         player = null;
+
         player = new Hero (100, 645, "./graphics/backgrounds/endlevel.png", "./graphics/characters/player/playableCharacterIdle.png", 1200, 1500);
-        boss = new Enemy(1000,620,player,"trump"); //create boss from enemy class
-        enemies.add(boss); //add boss to window
+        trump = new Trump(1600, 205, player, window);
+        //boss = new Enemy(1000,620,player,"trump"); //create boss from enemy class
+        //enemies.add(boss); //add boss to window
+
 
         try {
             s2.openFromFile(Paths.get("./audio/b6.ogg"));
@@ -756,6 +723,7 @@ public class Game {
 
     private void stageEnd() {
         lvl = 36;
+        trump.notVisible();
         enemies.clear();
         boxes.clear();
         window.clear();

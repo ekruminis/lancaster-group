@@ -439,7 +439,7 @@ public class Enemy  extends Animator {
     /**
      * draw the window
      *
-     * @param window The window
+     *
      */
 
     public int getScore() {

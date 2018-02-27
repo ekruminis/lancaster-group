@@ -6,12 +6,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class Trump extends  Collision {
-
-    public FloatRect getHitbox() {
-        return hitbox;
-    }
-
+public class Orb extends  Collision {
     private FloatRect hitbox;
     private FloatRect boom;
     private int eX;
@@ -27,18 +22,17 @@ public class Trump extends  Collision {
     ArrayList<Projectiles> pro = new ArrayList<>(1);
     int n = 2;
 
-    public Trump(int eX,int eY,Hero hero, RenderWindow window2){
+    public Orb(int eX,int eY,Hero hero, RenderWindow window2){
         this.eX=eX;
         this.eY=eY;
         this.window = window2;
 
         SpriteSheet ss = new SpriteSheet();
-        trump = ss.getFrame(689, 42, 380, 535, "./graphics/characters/trump/sprite.png");
+        trump = ss.getFrame(0, 85, 80, 80, "./graphics/characters/trump/sprite.png");
         trump.setPosition(eX,eY);
         //trump.setOrigin(Vector2f.div(new Vector2f(hero.getImgTexture ().getSize ()), 1000000));
 
-        //hitbox = new FloatRect(900, 740, 585, 385);
-        hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 1000, 1000);
+        hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 80, 80);
 
     }
 
@@ -47,10 +41,25 @@ public class Trump extends  Collision {
         SpriteSheet ss = new SpriteSheet();
         if(hero.getCenterX() < eX- hero.getBg().getBackX()){
             direction = false;
+            if(n <= 60){
+                if (n >= 1 && n <= 15) {
+                    trump = ss.getFrame(0, 85, 80, 80, "./graphics/characters/trump/sprite.png");
+                } else if (n >= 16 && n <= 30) {
+                    trump = ss.getFrame(0, 170, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                } else if (n >= 31 && n <= 45) {
+                    trump = ss.getFrame(85, 0, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                } else if (n >= 46 && n <= 60) {
+                    trump = ss.getFrame(85, 85, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                }
+                n++;
+            }
+            if(n == 60) {
+                n = 0;
+            }
 
             trump.setPosition(eX- hero.getBg().getBackX(),eY);
             //eX-=2;
-            hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 1000, 1000);
+            hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
 
         }
 
@@ -62,11 +71,28 @@ public class Trump extends  Collision {
         if(hero.getCenterX() > eX- hero.getBg().getBackX()){
             direction = false;
 
+            if(n <= 60){
+                if (n >= 1 && n <= 15) {
+                    trump = ss.getFrame(85, 170, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                } else if (n >= 16 && n <= 30) {
+                    trump = ss.getFrame(0, 0, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                } else if (n >= 31 && n <= 45) {
+                    trump = ss.getFrame(170, 0, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                } else if (n >= 46 && n <= 60) {
+                    trump = ss.getFrame(170, 85, 80, 80, "./graphics/characters/orb/spritesheet.png");
+                }
+                n++;
+            }
+            if(n == 60) {
+                n = 0;
+            }
+            //eX+=2;
             trump.setPosition(eX- hero.getBg().getBackX(),eY);
-            hitbox = new FloatRect(eX - hero.getBg().getBackX()+20, eY, 1000, 1000);
+            hitbox = new FloatRect(eX - hero.getBg().getBackX(), eY, 96, 96);
 
         }
     }
+
 
     public Sprite changeImg(Sprite x,String e) {
         Texture imgTexture = new Texture ();
